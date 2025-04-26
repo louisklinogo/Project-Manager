@@ -3,7 +3,24 @@
 ## Project Overview
 Project-Manager is a blueprint generator that researches, plans, and creates structured guidance for IDE coding LLMs to follow. It leverages powerful AI models for planning and design, enabling even less capable LLMs to deliver excellent results by following the generated blueprints.
 
-## Implementation Plan with Testing Checkpoints
+## Implementation Plan with Testing Checkpoints and GitHub Milestones
+
+### GitHub Commit Milestones
+
+To ensure regular tracking and versioning of our progress, we will commit to GitHub at the following milestones:
+
+- **Initial Setup**: After completing project initialization and basic structure
+- **Core Infrastructure**: After implementing the core infrastructure components
+- **Provider Integration**: After implementing and testing AI provider integration
+- **Research Module**: After implementing the research module
+- **Direct Functions**: After implementing all direct functions
+- **MCP Integration**: After implementing MCP server integration
+- **CLI Implementation**: After implementing CLI commands
+- **Research Integration**: After integrating the research module with other components
+- **Blueprint Generation**: After implementing blueprint generation capabilities
+- **Testing & Verification**: After implementing comprehensive testing
+- **Documentation**: After completing all documentation
+- **Release**: After preparing for release
 
 ### Phase 1: Foundation (Weeks 1-2)
 
@@ -14,6 +31,7 @@ Project-Manager is a blueprint generator that researches, plans, and creates str
 - [x] Create initial README and documentation
 - [x] Set up Jest for testing
 - [x] **TEST CHECKPOINT**: Verify project structure is correctly set up with passing linting
+- [x] **COMMIT MILESTONE**: Initial project setup
 
 #### Task 1.2: Core Data Models
 - [x] Define Project model schema
@@ -22,6 +40,7 @@ Project-Manager is a blueprint generator that researches, plans, and creates str
 - [x] Create JSON schemas for validation
 - [x] Implement file system operations for reading/writing models
 - [x] **TEST CHECKPOINT**: Unit test data models and validation functions
+- [x] **COMMIT MILESTONE**: Core infrastructure implementation
 
 #### Task 1.3: AI Provider Abstraction
 - [x] Design provider interface for model integration
@@ -31,6 +50,7 @@ Project-Manager is a blueprint generator that researches, plans, and creates str
 - [x] Create adapter for Gemini models
 - [x] Implement model selection based on task type
 - [x] **TEST CHECKPOINT**: Test each provider adapter with mock responses
+- [x] **COMMIT MILESTONE**: Provider integration implementation
 
 #### Task 1.4: Research Module Foundation
 - [x] Implement Perplexity API integration
@@ -38,6 +58,7 @@ Project-Manager is a blueprint generator that researches, plans, and creates str
 - [x] Design knowledge storage structure
 - [x] Implement simple query capabilities
 - [x] **TEST CHECKPOINT**: Test research module with sample queries
+- [x] **COMMIT MILESTONE**: Research module implementation
 
 ### Phase 2: Core Functionality Implementation (Weeks 3-4)
 
@@ -47,6 +68,7 @@ Project-Manager is a blueprint generator that researches, plans, and creates str
 - [x] Implement generate-blueprint-direct.js
 - [x] Implement list-projects-direct.js
 - [x] **TEST CHECKPOINT**: Test direct functions with sample projects
+- [x] **COMMIT MILESTONE**: Direct functions implementation
 
 #### Task 2.2: MCP Server Integration
 
@@ -79,6 +101,7 @@ Project-Manager is a blueprint generator that researches, plans, and creates str
 - [x] Create research-driven planning utilities
 - [x] Implement research-driven planning capabilities
 - [x] **TEST CHECKPOINT**: Test integrated functionality with sample projects
+- [x] **COMMIT MILESTONE**: Research integration implementation
 
 ### Phase 3: Blueprint Generation (Weeks 5-6)
 
@@ -148,6 +171,7 @@ Project-Manager is a blueprint generator that researches, plans, and creates str
 - [x] Set up test fixtures and mocks
 - [ ] Configure test coverage reporting
 - [x] **TEST CHECKPOINT**: Verify all tests can run successfully
+- [x] **COMMIT MILESTONE**: Testing framework implementation
 
 #### Task 5.2: Integration Testing
 - [x] Create end-to-end test for project initialization
