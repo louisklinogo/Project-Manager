@@ -5,16 +5,19 @@
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { validateProjectSchema } from './validator.js';
+import { ProjectInterface } from './interfaces/index.js';
 
 /**
  * Project class
+ * @implements {ProjectInterface}
  */
-export class Project {
+export class Project extends ProjectInterface {
   /**
    * Create a new project
    * @param {object} data - Project data
    */
   constructor(data = {}) {
+    super();
     this.id = data.id || `project-${uuidv4()}`;
     this.name = data.name || 'New Project';
     this.description = data.description || '';
@@ -64,6 +67,32 @@ export class Project {
 
     const data = JSON.stringify(this, null, 2);
     await fs.promises.writeFile(filePath, data, 'utf8');
+  }
+
+  /**
+   * Load a project from a file
+   * @param {string} filePath - File path
+   * @returns {Promise<Project>} - Loaded project
+   * @static
+   */
+  static async load(filePath) {
+    try {
+      const data = await fs.promises.readFile(filePath, 'utf8');
+      const json = JSON.parse(data);
+      return new Project(json);
+    } catch (error) {
+      throw new Error(`Failed to load project from ${filePath}: ${error.message}`);
+    }
+  }
+
+  /**
+   * Create a project from a JSON object
+   * @param {object} json - JSON object
+   * @returns {Project} - Project instance
+   * @static
+   */
+  static fromJSON(json) {
+    return new Project(json);
   }
 
   /**

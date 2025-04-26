@@ -5,6 +5,7 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import { OpenAI } from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { handleError } from './error-handler.js';
 
 // Cache for AI clients to avoid recreating them
 const clientCache = {
@@ -160,7 +161,7 @@ export function getModelConfig() {
  */
 export function getBestAvailableAIModel(options = {}) {
   const modelConfig = getModelConfig();
-  
+
   // Try Anthropic first
   try {
     const anthropicClient = getAnthropicClientForMCP(options);
@@ -172,7 +173,7 @@ export function getBestAvailableAIModel(options = {}) {
   } catch (error) {
     console.warn('Anthropic client not available:', error.message);
   }
-  
+
   // Try OpenAI next
   try {
     const openaiClient = getOpenAIClientForMCP(options);
@@ -184,7 +185,7 @@ export function getBestAvailableAIModel(options = {}) {
   } catch (error) {
     console.warn('OpenAI client not available:', error.message);
   }
-  
+
   // Try Gemini next
   try {
     const geminiClient = getGeminiClientForMCP(options);
@@ -196,7 +197,7 @@ export function getBestAvailableAIModel(options = {}) {
   } catch (error) {
     console.warn('Gemini client not available:', error.message);
   }
-  
+
   // Try Perplexity last
   try {
     const perplexityClient = getPerplexityClientForMCP(options);
@@ -208,7 +209,7 @@ export function getBestAvailableAIModel(options = {}) {
   } catch (error) {
     console.warn('Perplexity client not available:', error.message);
   }
-  
+
   throw new Error('No AI providers available. Please check your API keys and try again.');
 }
 
@@ -217,45 +218,11 @@ export function getBestAvailableAIModel(options = {}) {
  * @param {Error} error - Error object
  * @param {string} operation - Operation being performed
  * @returns {object} - Error object with additional information
+ * @deprecated Use the error-handler.js module instead
  */
 export function handleAIError(error, operation = 'AI operation') {
-  console.error(`Error during ${operation}:`, error);
-  
-  // Handle Anthropic-specific errors
-  if (error.name === 'AnthropicError') {
-    return {
-      message: `Anthropic API error: ${error.message}`,
-      status: error.status || 500,
-      type: 'anthropic_error',
-      details: error
-    };
-  }
-  
-  // Handle OpenAI-specific errors
-  if (error.name === 'OpenAIError') {
-    return {
-      message: `OpenAI API error: ${error.message}`,
-      status: error.status || 500,
-      type: 'openai_error',
-      details: error
-    };
-  }
-  
-  // Handle Gemini-specific errors
-  if (error.name === 'GoogleGenerativeAIError') {
-    return {
-      message: `Gemini API error: ${error.message}`,
-      status: error.status || 500,
-      type: 'gemini_error',
-      details: error
-    };
-  }
-  
-  // Handle generic errors
-  return {
-    message: `Error during ${operation}: ${error.message}`,
-    status: error.status || 500,
-    type: 'ai_error',
-    details: error
-  };
+  console.warn('handleAIError is deprecated. Use error-handler.js module instead.');
+
+  // Use the imported handleError function
+  return handleError(error, operation);
 }

@@ -5,16 +5,19 @@
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { validateBlueprintSchema } from './validator.js';
+import { BlueprintInterface } from './interfaces/index.js';
 
 /**
  * Blueprint class
+ * @implements {BlueprintInterface}
  */
-export class Blueprint {
+export class Blueprint extends BlueprintInterface {
   /**
    * Create a new blueprint
    * @param {object} data - Blueprint data
    */
   constructor(data = {}) {
+    super();
     this.id = data.id || `blueprint-${uuidv4()}`;
     this.project_id = data.project_id;
     this.created_at = data.created_at || new Date().toISOString();
@@ -65,6 +68,32 @@ export class Blueprint {
 
     const data = JSON.stringify(this, null, 2);
     await fs.promises.writeFile(filePath, data, 'utf8');
+  }
+
+  /**
+   * Load a blueprint from a file
+   * @param {string} filePath - File path
+   * @returns {Promise<Blueprint>} - Loaded blueprint
+   * @static
+   */
+  static async load(filePath) {
+    try {
+      const data = await fs.promises.readFile(filePath, 'utf8');
+      const json = JSON.parse(data);
+      return new Blueprint(json);
+    } catch (error) {
+      throw new Error(`Failed to load blueprint from ${filePath}: ${error.message}`);
+    }
+  }
+
+  /**
+   * Create a blueprint from a JSON object
+   * @param {object} json - JSON object
+   * @returns {Blueprint} - Blueprint instance
+   * @static
+   */
+  static fromJSON(json) {
+    return new Blueprint(json);
   }
 
   /**

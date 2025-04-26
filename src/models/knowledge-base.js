@@ -5,16 +5,19 @@
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { validateKnowledgeBaseSchema } from './validator.js';
+import { KnowledgeBaseInterface } from './interfaces/index.js';
 
 /**
  * Knowledge Base class
+ * @implements {KnowledgeBaseInterface}
  */
-export class KnowledgeBase {
+export class KnowledgeBase extends KnowledgeBaseInterface {
   /**
    * Create a new knowledge base
    * @param {object} data - Knowledge base data
    */
   constructor(data = {}) {
+    super();
     this.id = data.id || `kb-${uuidv4()}`;
     this.domain = data.domain || '';
     this.created_at = data.created_at || new Date().toISOString();
@@ -68,9 +71,23 @@ export class KnowledgeBase {
    * @returns {Promise<KnowledgeBase>}
    */
   static async load(filePath) {
-    const data = await fs.promises.readFile(filePath, 'utf8');
-    const kbData = JSON.parse(data);
-    return new KnowledgeBase(kbData);
+    try {
+      const data = await fs.promises.readFile(filePath, 'utf8');
+      const kbData = JSON.parse(data);
+      return new KnowledgeBase(kbData);
+    } catch (error) {
+      throw new Error(`Failed to load knowledge base from ${filePath}: ${error.message}`);
+    }
+  }
+
+  /**
+   * Create a knowledge base from a JSON object
+   * @param {object} json - JSON object
+   * @returns {KnowledgeBase} - Knowledge base instance
+   * @static
+   */
+  static fromJSON(json) {
+    return new KnowledgeBase(json);
   }
 
   /**
