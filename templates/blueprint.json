@@ -1,0 +1,15 @@
+{
+  "id": "blueprint-1",
+  "project_id": "project-1",
+  "created_at": "{{created_at}}",
+  "updated_at": "{{updated_at}}",
+  "architecture": {
+    "components": [],
+    "relationships": []
+  },
+  "tasks": [],
+  "workflow": {
+    "steps": [],
+    "checkpoints": []
+  }
+}

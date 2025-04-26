@@ -8,6 +8,11 @@ import { ResearchQuery } from './research-query.js';
 import { ResearchResult } from './research-result.js';
 import { PerplexityProvider } from '../providers/perplexity-provider.js';
 import { GeminiProvider } from '../providers/gemini-provider.js';
+import {
+  generateProjectPlan,
+  generateArchitectureRecommendations,
+  generateTaskBreakdown
+} from './planning-utils.js';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -280,5 +285,214 @@ export class ResearchManager {
   clear() {
     this.queries.clear();
     this.results.clear();
+  }
+
+  /**
+   * Generate a project plan based on research results
+   * @param {Array<string>} resultIds - Array of result IDs to use for planning
+   * @param {Object} options - Planning options
+   * @returns {Promise<Object>} Generated plan
+   */
+  async generateProjectPlan(resultIds, options = {}) {
+    // Get the research results
+    const results = resultIds.map(id => this.getResult(id)).filter(Boolean);
+
+    if (results.length === 0) {
+      throw new Error('No valid research results provided');
+    }
+
+    // Convert results to the format expected by the planning utilities
+    const formattedResults = results.map(result => {
+      // Handle both ResearchResult objects and plain objects
+      if (result.toObject) {
+        // It's a ResearchResult object
+        const resultObj = result.toObject();
+        return {
+          id: resultObj.id,
+          queryId: resultObj.queryId,
+          type: options.resultType || 'domain', // Default to domain knowledge
+          title: resultObj.results && resultObj.results[0] ? resultObj.results[0].title || 'Research Result' : 'Research Result',
+          content: resultObj.results && resultObj.results[0] ? resultObj.results[0].content || '' : '',
+          provider: resultObj.metadata ? resultObj.metadata.provider || 'unknown' : 'unknown'
+        };
+      } else {
+        // It's a plain object
+        return {
+          id: result.id,
+          queryId: result.queryId,
+          type: options.resultType || 'domain', // Default to domain knowledge
+          title: result.title || 'Research Result',
+          content: result.content || '',
+          provider: result.provider || 'unknown'
+        };
+      }
+    });
+
+    // Generate the project plan
+    return generateProjectPlan(formattedResults, options);
+  }
+
+  /**
+   * Generate architecture recommendations based on research results
+   * @param {Array<string>} resultIds - Array of result IDs to use for recommendations
+   * @param {Object} options - Planning options
+   * @returns {Promise<Object>} Generated architecture recommendations
+   */
+  async generateArchitectureRecommendations(resultIds, options = {}) {
+    // Get the research results
+    const results = resultIds.map(id => this.getResult(id)).filter(Boolean);
+
+    if (results.length === 0) {
+      throw new Error('No valid research results provided');
+    }
+
+    // Convert results to the format expected by the planning utilities
+    const formattedResults = results.map(result => {
+      // Handle both ResearchResult objects and plain objects
+      if (result.toObject) {
+        // It's a ResearchResult object
+        const resultObj = result.toObject();
+        return {
+          id: resultObj.id,
+          queryId: resultObj.queryId,
+          type: options.resultType || 'domain', // Default to domain knowledge
+          title: resultObj.results && resultObj.results[0] ? resultObj.results[0].title || 'Research Result' : 'Research Result',
+          content: resultObj.results && resultObj.results[0] ? resultObj.results[0].content || '' : '',
+          provider: resultObj.metadata ? resultObj.metadata.provider || 'unknown' : 'unknown'
+        };
+      } else {
+        // It's a plain object
+        return {
+          id: result.id,
+          queryId: result.queryId,
+          type: options.resultType || 'domain', // Default to domain knowledge
+          title: result.title || 'Research Result',
+          content: result.content || '',
+          provider: result.provider || 'unknown'
+        };
+      }
+    });
+
+    // Generate the architecture recommendations
+    return generateArchitectureRecommendations(formattedResults, options);
+  }
+
+  /**
+   * Generate task breakdown based on research results and project plan
+   * @param {Array<string>} resultIds - Array of result IDs to use for task breakdown
+   * @param {Object} projectPlan - Project plan
+   * @param {Object} options - Planning options
+   * @returns {Promise<Object>} Generated task breakdown
+   */
+  async generateTaskBreakdown(resultIds, projectPlan, options = {}) {
+    // Get the research results
+    const results = resultIds.map(id => this.getResult(id)).filter(Boolean);
+
+    if (results.length === 0) {
+      throw new Error('No valid research results provided');
+    }
+
+    // Convert results to the format expected by the planning utilities
+    const formattedResults = results.map(result => {
+      // Handle both ResearchResult objects and plain objects
+      if (result.toObject) {
+        // It's a ResearchResult object
+        const resultObj = result.toObject();
+        return {
+          id: resultObj.id,
+          queryId: resultObj.queryId,
+          type: options.resultType || 'domain', // Default to domain knowledge
+          title: resultObj.results && resultObj.results[0] ? resultObj.results[0].title || 'Research Result' : 'Research Result',
+          content: resultObj.results && resultObj.results[0] ? resultObj.results[0].content || '' : '',
+          provider: resultObj.metadata ? resultObj.metadata.provider || 'unknown' : 'unknown'
+        };
+      } else {
+        // It's a plain object
+        return {
+          id: result.id,
+          queryId: result.queryId,
+          type: options.resultType || 'domain', // Default to domain knowledge
+          title: result.title || 'Research Result',
+          content: result.content || '',
+          provider: result.provider || 'unknown'
+        };
+      }
+    });
+
+    // Generate the task breakdown
+    return generateTaskBreakdown(formattedResults, projectPlan, options);
+  }
+
+  /**
+   * Generate a complete blueprint based on research results
+   * @param {Array<string>} resultIds - Array of result IDs to use for blueprint generation
+   * @param {Object} options - Blueprint generation options
+   * @returns {Promise<Object>} Generated blueprint
+   */
+  async generateBlueprint(resultIds, options = {}) {
+    try {
+      // Generate project plan
+      const planResult = await this.generateProjectPlan(resultIds, options);
+
+      if (!planResult.success) {
+        throw new Error(`Failed to generate project plan: ${planResult.error.message}`);
+      }
+
+      // Generate architecture recommendations
+      const architectureResult = await this.generateArchitectureRecommendations(resultIds, options);
+
+      if (!architectureResult.success) {
+        throw new Error(`Failed to generate architecture recommendations: ${architectureResult.error.message}`);
+      }
+
+      // Generate task breakdown
+      const taskBreakdownResult = await this.generateTaskBreakdown(resultIds, planResult.plan, options);
+
+      if (!taskBreakdownResult.success) {
+        throw new Error(`Failed to generate task breakdown: ${taskBreakdownResult.error.message}`);
+      }
+
+      // Combine the results into a blueprint
+      const blueprint = {
+        id: options.blueprintId || `blueprint-${Date.now()}`,
+        name: options.blueprintName || 'Generated Blueprint',
+        description: options.description || 'Blueprint generated from research results',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        plan: planResult.plan,
+        architecture: architectureResult.architecture,
+        tasks: taskBreakdownResult.tasks,
+        metadata: {
+          research_results: resultIds,
+          generated_by: {
+            plan: {
+              provider: planResult.provider,
+              model: planResult.model
+            },
+            architecture: {
+              provider: architectureResult.provider,
+              model: architectureResult.model
+            },
+            tasks: {
+              provider: taskBreakdownResult.provider,
+              model: taskBreakdownResult.model
+            }
+          }
+        }
+      };
+
+      return {
+        success: true,
+        blueprint
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: {
+          code: 'BLUEPRINT_GENERATION_FAILED',
+          message: `Failed to generate blueprint: ${error.message}`
+        }
+      };
+    }
   }
 }

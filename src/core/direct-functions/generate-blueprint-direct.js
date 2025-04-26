@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { getBestAvailableProvider } from '../../providers/index.js';
+import { ResearchManager } from '../../research/index.js';
 
 /**
  * Read project.json file
@@ -224,55 +225,96 @@ export async function generateBlueprintDirect(args, log, context = {}) {
     const provider = await getBestAvailableProvider({ allowMock: true });
     log.info(`Using ${provider.name} provider for blueprint generation`);
 
-    // Generate blueprint prompt
-    const prompt = generateBlueprintPrompt(projectData);
-
-    // Generate blueprint using AI
-    reportProgress('Calling AI provider to generate blueprint...');
-
-    const messages = [
-      { role: 'system', content: 'You are a software architect assistant that creates detailed project blueprints.' },
-      { role: 'user', content: prompt }
-    ];
-
-    const completion = await provider.generateChatCompletion({
-      messages,
-      model: provider.defaultModel,
-      temperature: 0.2,
-      maxTokens: 4000
+    // Create a research manager
+    const researchManager = new ResearchManager({
+      storageDir: path.join(args.projectRoot, '.research'),
+      allowMock: true
     });
 
-    reportProgress('Processing AI response...');
+    // Load research results
+    await researchManager.loadResults();
 
-    // Parse the AI response
+    // Get all result IDs
+    const resultIds = Array.from(researchManager.results.keys());
+
+    // Variable to store blueprint data
     let blueprintData;
-    try {
-      // Extract JSON from the response
-      const jsonMatch = completion.message.match(/```json\n([\s\S]*?)\n```/) ||
-                        completion.message.match(/\{[\s\S]*\}/);
 
-      const jsonString = jsonMatch ? jsonMatch[1] || jsonMatch[0] : completion.message;
-      blueprintData = JSON.parse(jsonString);
+    if (resultIds.length === 0) {
+      // If no research results are found, fall back to the traditional method
+      reportProgress('No research results found. Using traditional blueprint generation...');
 
-      // Add metadata
-      blueprintData = {
-        id: uuidv4(),
-        project_id: projectData.id || uuidv4(),
-        name: blueprintName,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        ...blueprintData
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: {
-          code: 'BLUEPRINT_PARSING_FAILED',
-          message: `Failed to parse blueprint data: ${error.message}`,
-          details: completion.message
-        }
-      };
+      // Generate blueprint prompt
+      const prompt = generateBlueprintPrompt(projectData);
+
+      // Generate blueprint using AI
+      reportProgress('Calling AI provider to generate blueprint...');
+
+      const messages = [
+        { role: 'system', content: 'You are a software architect assistant that creates detailed project blueprints.' },
+        { role: 'user', content: prompt }
+      ];
+
+      const completion = await provider.generateChatCompletion({
+        messages,
+        model: provider.defaultModel,
+        temperature: 0.2,
+        maxTokens: 4000
+      });
+
+      reportProgress('Processing AI response...');
+
+      // Parse the AI response
+      try {
+        // Extract JSON from the response
+        const jsonMatch = completion.message.match(/```json\n([\s\S]*?)\n```/) ||
+                          completion.message.match(/\{[\s\S]*\}/);
+
+        const jsonString = jsonMatch ? jsonMatch[1] || jsonMatch[0] : completion.message;
+        blueprintData = JSON.parse(jsonString);
+      } catch (error) {
+        return {
+          success: false,
+          error: {
+            code: 'BLUEPRINT_PARSING_FAILED',
+            message: `Failed to parse blueprint data: ${error.message}`,
+            details: completion.message
+          }
+        };
+      }
+    } else {
+      // Use research-driven planning utilities
+      reportProgress('Using research-driven planning for blueprint generation...');
+
+      // Generate blueprint using research results
+      const blueprintResult = await researchManager.generateBlueprint(resultIds, {
+        blueprintName: args.blueprintName || 'blueprint',
+        description: `Blueprint for ${projectData.name}`,
+        blueprintId: uuidv4()
+      });
+
+      if (!blueprintResult.success) {
+        return {
+          success: false,
+          error: {
+            code: 'BLUEPRINT_GENERATION_FAILED',
+            message: blueprintResult.error.message
+          }
+        };
+      }
+
+      blueprintData = blueprintResult.blueprint;
     }
+
+    // Add metadata
+    blueprintData = {
+      id: uuidv4(),
+      project_id: projectData.id || uuidv4(),
+      name: blueprintName,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      ...blueprintData
+    };
 
     // Write blueprint file
     writeBlueprintFile(blueprintPath, blueprintData);

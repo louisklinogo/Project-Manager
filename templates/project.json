@@ -1,0 +1,14 @@
+{
+  "id": "project-1",
+  "name": "New Project",
+  "description": "A new project created with Project Manager",
+  "created_at": "{{created_at}}",
+  "updated_at": "{{updated_at}}",
+  "requirements": "",
+  "research": {
+    "domain_knowledge": [],
+    "similar_projects": [],
+    "best_practices": []
+  },
+  "blueprint": "blueprint-1"
+}
