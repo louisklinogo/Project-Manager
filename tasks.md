@@ -250,6 +250,46 @@ We follow a feature branch workflow:
 
 ### 🔄 Task 5.1: Enhanced Research Model (Partially Complete)
 
+<details>
+<summary><b>Research Phase</b> 📚</summary>
+
+- [ ] Conduct online research using Tavily/Firecrawl
+  - **Research topics**:
+    - Modern research systems architecture
+    - Confidence scoring algorithms and implementations
+    - Provider-specific API integration patterns
+    - Knowledge extraction and synthesis techniques
+    - Reference management systems
+  - **Key questions**:
+    - What are the best practices for confidence scoring in research systems?
+    - How do other systems handle conflicting information from different sources?
+    - What are the optimal integration patterns for research providers like Tavily and Firecrawl?
+    - How can we effectively manage and analyze different types of user references?
+  - **Output**: Research summary document in `docs/research/enhanced-research-model-research.md`
+
+- [ ] Perform codebase analysis
+  - **Analyze components**:
+    - Current research system implementation
+    - Existing adapter patterns
+    - Integration points with blueprint generation
+    - Current confidence scoring implementation
+  - **Output**: Component relationship diagram in `docs/research/research-system-architecture.md`
+
+- [ ] Evaluate implementation options
+  - **Compare approaches**:
+    - Monolithic vs. microservice architecture for research providers
+    - Synchronous vs. asynchronous research processing
+    - Rule-based vs. ML-based confidence scoring
+    - Centralized vs. distributed reference management
+  - **Output**: Decision document with rationale in `docs/research/implementation-decisions.md`
+
+- [ ] Create detailed implementation plan
+  - **Break down into subtasks**
+  - **Identify potential challenges**
+  - **Define acceptance criteria**
+  - **Output**: Detailed implementation plan in `docs/research/implementation-plan.md`
+</details>
+
 <details open>
 <summary><b>Completed Subtasks</b> ✅</summary>
 
@@ -388,6 +428,47 @@ We follow a feature branch workflow:
 ### 📝 Task 5.2: Instruction Protocol
 
 <details>
+<summary><b>Research Phase</b> 📚</summary>
+
+- [ ] Conduct online research using Tavily/Firecrawl
+  - **Research topics**:
+    - LLM instruction optimization techniques
+    - Context window utilization strategies
+    - Error prevention in LLM instructions
+    - Example-driven instruction patterns
+    - Cross-model instruction compatibility
+  - **Key questions**:
+    - What instruction formats yield the most consistent results across different LLMs?
+    - How can we optimize instructions for different context window sizes?
+    - What are the most effective ways to provide examples in instructions?
+    - How do different LLMs handle constraints and requirements in instructions?
+    - What error prevention techniques are most effective for LLM instructions?
+  - **Output**: Research summary document in `docs/research/instruction-protocol-research.md`
+
+- [ ] Perform codebase analysis
+  - **Analyze components**:
+    - Current instruction generation
+    - Blueprint to instruction conversion
+    - Error handling mechanisms
+    - Model-specific adaptations
+  - **Output**: Component relationship diagram in `docs/research/instruction-protocol-architecture.md`
+
+- [ ] Evaluate implementation options
+  - **Compare approaches**:
+    - Template-based vs. dynamic instruction generation
+    - Structured vs. natural language instructions
+    - Different error prevention strategies
+    - Model-specific vs. universal instruction formats
+  - **Output**: Decision document with rationale in `docs/research/instruction-protocol-decisions.md`
+
+- [ ] Create detailed implementation plan
+  - **Break down into subtasks**
+  - **Identify potential challenges**
+  - **Define acceptance criteria**
+  - **Output**: Detailed implementation plan in `docs/research/instruction-protocol-implementation-plan.md`
+</details>
+
+<details>
 <summary><b>Subtasks</b></summary>
 
 - [ ] Design LLM-optimized instruction format
@@ -457,6 +538,47 @@ We follow a feature branch workflow:
 ### 📝 Task 5.3: Blueprint Generation and Refinement
 
 <details>
+<summary><b>Research Phase</b> 📚</summary>
+
+- [ ] Conduct online research using Tavily/Firecrawl
+  - **Research topics**:
+    - Project planning algorithms and methodologies
+    - Task breakdown and sequencing techniques
+    - Dependency management in project planning
+    - Blueprint generation and refinement systems
+    - Co-design and brainstorming methodologies
+  - **Key questions**:
+    - What algorithms are most effective for project planning and task sequencing?
+    - How can we effectively identify and manage dependencies between tasks?
+    - What are the best practices for generating comprehensive blueprints?
+    - How can we implement effective co-design and brainstorming systems?
+    - What metrics should be used to evaluate blueprint quality?
+  - **Output**: Research summary document in `docs/research/blueprint-generation-research.md`
+
+- [ ] Perform codebase analysis
+  - **Analyze components**:
+    - Current blueprint generation system
+    - Integration with research system
+    - Task breakdown and sequencing
+    - Dependency management
+  - **Output**: Component relationship diagram in `docs/research/blueprint-generation-architecture.md`
+
+- [ ] Evaluate implementation options
+  - **Compare approaches**:
+    - Rule-based vs. ML-based project planning
+    - Different task breakdown methodologies
+    - Various dependency management techniques
+    - Different co-design and brainstorming approaches
+  - **Output**: Decision document with rationale in `docs/research/blueprint-generation-decisions.md`
+
+- [ ] Create detailed implementation plan
+  - **Break down into subtasks**
+  - **Identify potential challenges**
+  - **Define acceptance criteria**
+  - **Output**: Detailed implementation plan in `docs/research/blueprint-generation-implementation-plan.md`
+</details>
+
+<details>
 <summary><b>Subtasks</b></summary>
 
 - [ ] Implement project planning algorithms
@@ -518,6 +640,47 @@ We follow a feature branch workflow:
 ### 📝 Task 5.4: Blueprint Testing
 
 <details>
+<summary><b>Research Phase</b> 📚</summary>
+
+- [ ] Conduct online research using Tavily/Firecrawl
+  - **Research topics**:
+    - Software testing methodologies for blueprints
+    - Quality metrics for project plans
+    - Validation techniques for LLM-generated content
+    - Test-driven development for AI systems
+    - Blueprint validation frameworks
+  - **Key questions**:
+    - What are the most effective ways to test blueprint quality?
+    - How can we validate that blueprints are executable by different LLMs?
+    - What metrics best indicate blueprint quality and completeness?
+    - How can we automate blueprint validation?
+    - What are the best practices for testing AI-generated content?
+  - **Output**: Research summary document in `docs/research/blueprint-testing-research.md`
+
+- [ ] Perform codebase analysis
+  - **Analyze components**:
+    - Current blueprint validation
+    - Integration with blueprint generation
+    - Quality metrics implementation
+    - Test frameworks
+  - **Output**: Component relationship diagram in `docs/research/blueprint-testing-architecture.md`
+
+- [ ] Evaluate implementation options
+  - **Compare approaches**:
+    - Different testing methodologies
+    - Various quality metrics
+    - Automated vs. manual validation
+    - Different validation frameworks
+  - **Output**: Decision document with rationale in `docs/research/blueprint-testing-decisions.md`
+
+- [ ] Create detailed implementation plan
+  - **Break down into subtasks**
+  - **Identify potential challenges**
+  - **Define acceptance criteria**
+  - **Output**: Detailed implementation plan in `docs/research/blueprint-testing-implementation-plan.md`
+</details>
+
+<details>
 <summary><b>Subtasks</b></summary>
 
 - [ ] Create test suite for blueprint generation
@@ -540,6 +703,47 @@ We follow a feature branch workflow:
 </details>
 
 ### 📝 Task 5.6: PocketFlow Framework Enhancements
+
+<details>
+<summary><b>Research Phase</b> 📚</summary>
+
+- [ ] Conduct online research using Tavily/Firecrawl
+  - **Research topics**:
+    - Flow-based programming patterns and best practices
+    - JavaScript flow orchestration libraries
+    - Visualization techniques for flow-based systems
+    - Error handling and resilience patterns
+    - Performance optimization for flow-based systems
+  - **Key questions**:
+    - What are the best practices for flow visualization in JavaScript?
+    - How do other flow libraries handle conditional branching?
+    - What are the most efficient patterns for memoization in flow-based systems?
+    - How can we implement robust error handling without compromising performance?
+    - What are the trade-offs between different concurrency models?
+  - **Output**: Research summary document in `docs/research/pocketflow-enhancements-research.md`
+
+- [ ] Perform codebase analysis
+  - **Analyze components**:
+    - Current PocketFlow implementation
+    - Integration with other system components
+    - Performance characteristics
+    - Extension points
+  - **Output**: Component relationship diagram in `docs/research/pocketflow-architecture.md`
+
+- [ ] Evaluate implementation options
+  - **Compare approaches**:
+    - Extending existing classes vs. creating new ones
+    - Synchronous vs. asynchronous processing models
+    - Different visualization techniques
+    - Various error handling strategies
+  - **Output**: Decision document with rationale in `docs/research/pocketflow-implementation-decisions.md`
+
+- [ ] Create detailed implementation plan
+  - **Break down into subtasks**
+  - **Identify potential challenges**
+  - **Define acceptance criteria**
+  - **Output**: Detailed implementation plan in `docs/research/pocketflow-implementation-plan.md`
+</details>
 
 <details>
 <summary><b>Documentation and Testing</b> 🟢 (High Priority)</summary>
