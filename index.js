@@ -18,15 +18,15 @@ export const version = packageJson.version;
 
 // Export a function to initialize a new project programmatically
 export const initProject = async (options = {}) => {
-  const init = await import('./src/core/init.js');
-  return init.initializeProject(options);
+  const { initializeProjectDirect } = await import('./src/core/direct-functions/initialize-project-direct.js');
+  return initializeProjectDirect(options);
 };
 
 // Export a function to run init as a CLI command
 export const runInitCLI = async (options = {}) => {
   try {
-    const init = await import('./src/core/init.js');
-    const result = await init.initializeProject(options);
+    const { initializeProjectDirect } = await import('./src/core/direct-functions/initialize-project-direct.js');
+    const result = await initializeProjectDirect(options);
     return result;
   } catch (error) {
     console.error('Initialization failed:', error.message);
@@ -39,14 +39,14 @@ export const runInitCLI = async (options = {}) => {
 
 // Export a function to research a project
 export const researchProject = async (options = {}) => {
-  const research = await import('./src/research/research.js');
-  return research.conductResearch(options);
+  const { researchProjectDirect } = await import('./src/core/direct-functions/research-project-direct.js');
+  return researchProjectDirect(options);
 };
 
 // Export a function to generate a blueprint
 export const generateBlueprint = async (options = {}) => {
-  const blueprint = await import('./src/blueprints/generator.js');
-  return blueprint.generateBlueprint(options);
+  const { generateBlueprintDirect } = await import('./src/core/direct-functions/generate-blueprint-direct.js');
+  return generateBlueprintDirect(options);
 };
 
 // Export core functionality

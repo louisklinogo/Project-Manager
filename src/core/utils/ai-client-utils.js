@@ -1,11 +1,18 @@
 /**
- * AI client utility functions for Project Manager
+ * @fileoverview AI client utility functions for Project Manager
+ *
+ * This module provides utility functions for working with AI providers
+ * like Anthropic, OpenAI, Google Gemini, and Perplexity.
+ *
+ * @module core/utils/ai-client-utils
  */
 
 import { Anthropic } from '@anthropic-ai/sdk';
 import { OpenAI } from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { handleError } from './error-handler.js';
+import config from '../config.js';
+import logger from './logger.js';
 
 // Cache for AI clients to avoid recreating them
 const clientCache = {
@@ -127,102 +134,137 @@ export function getPerplexityClientForMCP(options = {}) {
 
 /**
  * Get model configuration
- * @returns {object} - Model configuration
+ *
+ * @param {Object} options - Options for model configuration
+ * @param {string} options.provider - Provider to get configuration for (optional)
+ * @returns {Object} - Model configuration for all providers or a specific provider
  */
-export function getModelConfig() {
-  return {
+export function getModelConfig(options = {}) {
+  const modelConfig = {
     anthropic: {
-      model: process.env.DEFAULT_MODEL || 'claude-3-7-sonnet-20250219',
+      model: config.get('anthropic.defaultModel'),
       max_tokens: parseInt(process.env.MAX_TOKENS, 10) || 64000,
       temperature: parseFloat(process.env.TEMPERATURE) || 0.2
     },
     openai: {
-      model: process.env.OPENAI_MODEL || 'gpt-4o',
+      model: config.get('openai.defaultModel'),
       max_tokens: parseInt(process.env.MAX_TOKENS, 10) || 64000,
       temperature: parseFloat(process.env.TEMPERATURE) || 0.2
     },
     gemini: {
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-pro',
+      model: config.get('gemini.defaultModel'),
       max_tokens: parseInt(process.env.MAX_TOKENS, 10) || 64000,
       temperature: parseFloat(process.env.TEMPERATURE) || 0.2
     },
     perplexity: {
-      model: process.env.PERPLEXITY_MODEL || 'sonar-pro',
+      model: config.get('perplexity.defaultModel'),
       max_tokens: parseInt(process.env.MAX_TOKENS, 10) || 4000,
       temperature: parseFloat(process.env.TEMPERATURE) || 0.2
     }
   };
+
+  // If a specific provider is requested, return only that provider's config
+  if (options.provider && modelConfig[options.provider]) {
+    return modelConfig[options.provider];
+  }
+
+  return modelConfig;
 }
 
 /**
  * Get the best available AI model
- * @param {object} options - Options for model selection
- * @returns {object} - Best available model and client
+ *
+ * @param {Object} options - Options for model selection
+ * @param {string} options.preferredProvider - Preferred provider to use if available
+ * @returns {Object} - Best available model and client
+ * @throws {Error} If no AI providers are available
  */
 export function getBestAvailableAIModel(options = {}) {
   const modelConfig = getModelConfig();
+  const preferredProvider = options.preferredProvider || config.getDefaultProvider();
+  const providers = ['anthropic', 'openai', 'gemini', 'perplexity'];
 
-  // Try Anthropic first
-  try {
-    const anthropicClient = getAnthropicClientForMCP(options);
-    return {
-      provider: 'anthropic',
-      client: anthropicClient,
-      config: modelConfig.anthropic
-    };
-  } catch (error) {
-    console.warn('Anthropic client not available:', error.message);
+  // If a preferred provider is specified, try it first
+  if (preferredProvider && providers.includes(preferredProvider)) {
+    try {
+      logger.debug(`Trying preferred provider: ${preferredProvider}`);
+
+      let client;
+      switch (preferredProvider) {
+        case 'anthropic':
+          client = getAnthropicClientForMCP(options);
+          break;
+        case 'openai':
+          client = getOpenAIClientForMCP(options);
+          break;
+        case 'gemini':
+          client = getGeminiClientForMCP(options);
+          break;
+        case 'perplexity':
+          client = getPerplexityClientForMCP(options);
+          break;
+      }
+
+      return {
+        provider: preferredProvider,
+        client,
+        config: modelConfig[preferredProvider]
+      };
+    } catch (error) {
+      logger.warn(`Preferred provider ${preferredProvider} not available:`, error.message);
+    }
   }
 
-  // Try OpenAI next
-  try {
-    const openaiClient = getOpenAIClientForMCP(options);
-    return {
-      provider: 'openai',
-      client: openaiClient,
-      config: modelConfig.openai
-    };
-  } catch (error) {
-    console.warn('OpenAI client not available:', error.message);
+  // Try each provider in order
+  for (const provider of providers) {
+    // Skip the preferred provider if it was already tried
+    if (provider === preferredProvider) continue;
+
+    try {
+      logger.debug(`Trying provider: ${provider}`);
+
+      let client;
+      switch (provider) {
+        case 'anthropic':
+          client = getAnthropicClientForMCP(options);
+          break;
+        case 'openai':
+          client = getOpenAIClientForMCP(options);
+          break;
+        case 'gemini':
+          client = getGeminiClientForMCP(options);
+          break;
+        case 'perplexity':
+          client = getPerplexityClientForMCP(options);
+          break;
+      }
+
+      return {
+        provider,
+        client,
+        config: modelConfig[provider]
+      };
+    } catch (error) {
+      logger.warn(`${provider} client not available:`, error.message);
+    }
   }
 
-  // Try Gemini next
-  try {
-    const geminiClient = getGeminiClientForMCP(options);
-    return {
-      provider: 'gemini',
-      client: geminiClient,
-      config: modelConfig.gemini
-    };
-  } catch (error) {
-    console.warn('Gemini client not available:', error.message);
-  }
-
-  // Try Perplexity last
-  try {
-    const perplexityClient = getPerplexityClientForMCP(options);
-    return {
-      provider: 'perplexity',
-      client: perplexityClient,
-      config: modelConfig.perplexity
-    };
-  } catch (error) {
-    console.warn('Perplexity client not available:', error.message);
-  }
-
+  logger.error('No AI providers available. Please check your API keys.');
   throw new Error('No AI providers available. Please check your API keys and try again.');
 }
 
 /**
  * Handle AI errors
+ *
  * @param {Error} error - Error object
  * @param {string} operation - Operation being performed
- * @returns {object} - Error object with additional information
+ * @param {Object} options - Error handling options
+ * @returns {Object} - Error object with additional information
  * @deprecated Use the error-handler.js module instead
  */
-export function handleAIError(error, operation = 'AI operation') {
-  console.warn('handleAIError is deprecated. Use error-handler.js module instead.');
+export function handleAIError(error, operation = 'AI operation', options = {}) {
+  logger.warn('handleAIError is deprecated. Use error-handler.js module instead.');
 
   // Use the imported handleError function
-  return handleError(error, operation);
+  return handleError(error, operation, options);
 }

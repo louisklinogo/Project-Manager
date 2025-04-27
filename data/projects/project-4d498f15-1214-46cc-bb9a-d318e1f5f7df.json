@@ -1,0 +1,9 @@
+{
+  "id": "project-4d498f15-1214-46cc-bb9a-d318e1f5f7df",
+  "name": "Test Project",
+  "description": "A simple test project",
+  "requirements": "Create a web application with user authentication",
+  "createdAt": "2025-04-27T12:47:50.044Z",
+  "updatedAt": "2025-04-27T12:47:50.044Z",
+  "status": "active"
+}

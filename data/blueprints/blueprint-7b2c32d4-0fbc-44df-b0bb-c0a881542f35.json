@@ -1,0 +1,30 @@
+{
+  "id": "blueprint-7b2c32d4-0fbc-44df-b0bb-c0a881542f35",
+  "projectId": "project-4d498f15-1214-46cc-bb9a-d318e1f5f7df",
+  "name": "Blueprint for Test Project",
+  "description": "Generated blueprint for Test Project: A simple test project",
+  "createdAt": "2025-04-27T12:47:50.073Z",
+  "updatedAt": "2025-04-27T12:47:50.073Z",
+  "tasks": [
+    {
+      "id": "task-858767b0-69b6-4827-a071-b70de809ffbb",
+      "title": "Task 1: Create a web application with user authentication",
+      "description": "Create a web application with user authentication",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [],
+      "subtasks": []
+    }
+  ],
+  "dependencies": [],
+  "visualizations": {
+    "dependencyGraph": "graph TD;\n  task_858767b0_69b6_4827_a071_b70de809ffbb[\"Task 1: Create a web application with user authentication\"];\n"
+  },
+  "research": {
+    "result": {
+      "summary": {
+        "keyPoints": []
+      }
+    }
+  }
+}
