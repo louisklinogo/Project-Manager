@@ -192,20 +192,75 @@ To ensure regular tracking and versioning of our progress, we will commit to Git
 #### Task 4.4: Dependency Management Enhancements
 
 - [ ] Implement UI integration for dependency visualization
+  - Reference files:
+    - `src/utils/dependency-visualizer.js` - Enhance with Mermaid diagram generation
+    - `src/utils/task-hierarchy-visualizer.js` - Update to include dependency visualization
+  - Implementation pattern: Adopt visualization approach from `Tutorial-Codebase-Knowledge/nodes.py` (CombineTutorial class, lines 600-650)
+
 - [ ] Create interactive dependency graph with collapsible nodes
+  - Reference files:
+    - `src/utils/dependency-visualizer.js` - Add HTML output format with interactive features
+    - `demos/dependency-visualization-demo.js` - Create new demo for interactive visualization
+  - Implementation pattern: Use Mermaid flowchart with click events and custom styling
+
 - [ ] Develop dependency suggestion system based on task relationships
+  - Reference files:
+    - `src/utils/dependency-resolver.js` - Add methods for suggesting optimal dependencies
+    - `src/models/task.js` - Add methods for analyzing potential dependencies
+  - Implementation pattern: Adopt relationship analysis from `Tutorial-Codebase-Knowledge/nodes.py` (AnalyzeRelationships class)
+
 - [ ] Optimize dependency algorithms for large task hierarchies
+  - Reference files:
+    - `src/utils/dependency-validator.js` - Optimize validation algorithms
+    - `src/utils/dependency-resolver.js` - Implement caching and performance improvements
+  - Implementation pattern: Use efficient graph traversal algorithms and memoization
+
 - [ ] **TEST CHECKPOINT**: Verify enhanced dependency management features
+  - Reference files:
+    - `tests/unit/utils/dependency-visualizer.test.js` - Add tests for new visualization features
+    - `tests/unit/utils/dependency-resolver.test.js` - Add tests for suggestion system
+    - `demos/enhanced-dependency-management-demo.js` - Create comprehensive demo
+
 - [ ] **COMMIT MILESTONE**: Dependency management enhancements implementation
 
 #### Task 4.5: Work Preservation System
 
 - [ ] Design a work preservation system
+  - Reference files:
+    - `src/models/task.js` - Add completion status tracking and history
+    - `src/utils/work-preservation.js` - Create new utility for work preservation
+  - Implementation pattern: Adopt knowledge extraction approach from `Tutorial-Codebase-Knowledge/nodes.py` (WriteChapters class)
+
 - [ ] Add instructions in prompts to preserve completed work
+  - Reference files:
+    - `src/utils/prompt-templates.js` - Update templates to include work preservation instructions
+    - `src/services/ai-service.js` - Enhance prompt construction
+  - Implementation pattern: Use structured prompts with clear preservation guidelines
+
 - [ ] Implement tracking of completed work
+  - Reference files:
+    - `src/models/task.js` - Add completion history and versioning
+    - `src/utils/task-hierarchy-manager.js` - Add methods for tracking completion across hierarchy
+  - Implementation pattern: Create versioned snapshots of completed work
+
 - [ ] Create methods for building upon completed work
+  - Reference files:
+    - `src/utils/work-preservation.js` - Add methods for incremental updates
+    - `src/services/blueprint-service.js` - Enhance blueprint generation to build on completed work
+  - Implementation pattern: Use context from previous work to inform new generations
+
 - [ ] Add safeguards against modifying completed tasks
+  - Reference files:
+    - `src/models/task.js` - Add locking mechanisms for completed tasks
+    - `src/utils/task-hierarchy-manager.js` - Implement validation to prevent modifications
+  - Implementation pattern: Implement validation checks and permission systems
+
 - [ ] **TEST CHECKPOINT**: Verify work preservation during updates
+  - Reference files:
+    - `tests/unit/utils/work-preservation.test.js` - Create new test file
+    - `tests/unit/models/task.test.js` - Add tests for completion status and history
+    - `demos/work-preservation-demo.js` - Create comprehensive demo
+
 - [ ] **COMMIT MILESTONE**: Work preservation implementation
 
 ### Phase 5: Blueprint Generation and Testing (Weeks 11-13)
