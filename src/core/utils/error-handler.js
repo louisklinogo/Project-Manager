@@ -1,9 +1,13 @@
 /**
- * Error Handler
- * 
+ * @fileoverview Error Handler
+ *
  * This module provides comprehensive error handling utilities for the application,
  * including error categorization, automatic retries, and user-friendly error messages.
+ *
+ * @module core/utils/error-handler
  */
+
+import logger from './logger.js';
 
 /**
  * Error types
@@ -16,24 +20,24 @@ export const ErrorType = {
   TIMEOUT_ERROR: 'timeout_error',
   NOT_FOUND_ERROR: 'not_found_error',
   PERMISSION_ERROR: 'permission_error',
-  
+
   // AI provider errors
   AI_PROVIDER_ERROR: 'ai_provider_error',
   ANTHROPIC_ERROR: 'anthropic_error',
   OPENAI_ERROR: 'openai_error',
   GEMINI_ERROR: 'gemini_error',
   PERPLEXITY_ERROR: 'perplexity_error',
-  
+
   // Rate limiting and quota errors
   RATE_LIMIT_ERROR: 'rate_limit_error',
   QUOTA_EXCEEDED_ERROR: 'quota_exceeded_error',
-  
+
   // Authentication errors
   AUTHENTICATION_ERROR: 'authentication_error',
-  
+
   // File system errors
   FILE_SYSTEM_ERROR: 'file_system_error',
-  
+
   // Unknown errors
   UNKNOWN_ERROR: 'unknown_error'
 };
@@ -105,7 +109,7 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       metadata: error.error || {}
     });
   }
-  
+
   // Handle OpenAI-specific errors
   if (error.name === 'OpenAIError' || error.type === 'openai_error') {
     return new AppError(`OpenAI API error during ${operation}: ${error.message}`, {
@@ -115,7 +119,7 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       metadata: error.error || {}
     });
   }
-  
+
   // Handle Gemini-specific errors
   if (error.name === 'GoogleGenerativeAIError' || error.type === 'gemini_error') {
     return new AppError(`Gemini API error during ${operation}: ${error.message}`, {
@@ -125,7 +129,7 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       metadata: error.error || {}
     });
   }
-  
+
   // Handle Perplexity-specific errors
   if (error.name === 'PerplexityError' || error.type === 'perplexity_error') {
     return new AppError(`Perplexity API error during ${operation}: ${error.message}`, {
@@ -135,9 +139,9 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       metadata: error.error || {}
     });
   }
-  
+
   // Handle rate limit errors
-  if (error.status === 429 || error.message?.toLowerCase().includes('rate limit') || 
+  if (error.status === 429 || error.message?.toLowerCase().includes('rate limit') ||
       error.message?.toLowerCase().includes('too many requests')) {
     return new AppError(`Rate limit exceeded during ${operation}. Please try again later.`, {
       type: ErrorType.RATE_LIMIT_ERROR,
@@ -145,9 +149,9 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       cause: error
     });
   }
-  
+
   // Handle authentication errors
-  if (error.status === 401 || error.message?.toLowerCase().includes('authentication') || 
+  if (error.status === 401 || error.message?.toLowerCase().includes('authentication') ||
       error.message?.toLowerCase().includes('api key')) {
     return new AppError(`Authentication failed during ${operation}. Please check your API key.`, {
       type: ErrorType.AUTHENTICATION_ERROR,
@@ -155,7 +159,7 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       cause: error
     });
   }
-  
+
   // Handle timeout errors
   if (error.message?.toLowerCase().includes('timeout')) {
     return new AppError(`Request timed out during ${operation}. Please try again.`, {
@@ -164,7 +168,7 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       cause: error
     });
   }
-  
+
   // Handle network errors
   if (error.message?.toLowerCase().includes('network') || error.message?.toLowerCase().includes('connection')) {
     return new AppError(`Network error during ${operation}. Please check your connection.`, {
@@ -173,7 +177,7 @@ export function createErrorFromApiError(error, operation = 'API operation') {
       cause: error
     });
   }
-  
+
   // Handle generic errors
   return new AppError(`Error during ${operation}: ${error.message}`, {
     type: ErrorType.UNKNOWN_ERROR,
@@ -199,25 +203,25 @@ export async function retryWithExponentialBackoff(fn, options = {}) {
   const initialDelay = options.initialDelay || 1000;
   const maxDelay = options.maxDelay || 30000;
   const shouldRetry = options.shouldRetry || ((error) => {
-    return error.type === ErrorType.NETWORK_ERROR || 
+    return error.type === ErrorType.NETWORK_ERROR ||
            error.type === ErrorType.TIMEOUT_ERROR ||
            error.type === ErrorType.RATE_LIMIT_ERROR;
   });
   const onRetry = options.onRetry || (() => {});
-  
+
   let lastError;
-  
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       // Convert to AppError if it's not already
-      const appError = error instanceof AppError 
-        ? error 
+      const appError = error instanceof AppError
+        ? error
         : createErrorFromApiError(error);
-      
+
       lastError = appError;
-      
+
       // Check if we should retry
       if (attempt < maxRetries && shouldRetry(appError)) {
         // Calculate delay with exponential backoff and jitter
@@ -225,10 +229,10 @@ export async function retryWithExponentialBackoff(fn, options = {}) {
           initialDelay * Math.pow(2, attempt) + Math.random() * 1000,
           maxDelay
         );
-        
+
         // Call onRetry callback
         onRetry(appError, attempt + 1, delay);
-        
+
         // Wait before retrying
         await new Promise(resolve => setTimeout(resolve, delay));
       } else {
@@ -237,7 +241,7 @@ export async function retryWithExponentialBackoff(fn, options = {}) {
       }
     }
   }
-  
+
   // This should never be reached, but just in case
   throw lastError;
 }
@@ -255,25 +259,25 @@ export async function retryWithExponentialBackoff(fn, options = {}) {
 export function handleError(error, operation = 'operation', options = {}) {
   const logError = options.logError !== false;
   const throwError = options.throwError === true;
-  
+
   // Convert to AppError if it's not already
-  const appError = error instanceof AppError 
-    ? error 
+  const appError = error instanceof AppError
+    ? error
     : createErrorFromApiError(error, operation);
-  
+
   // Log the error
   if (logError) {
-    console.error(`Error during ${operation}:`, appError);
+    logger.error(`Error during ${operation}:`, appError);
     if (appError.cause) {
-      console.error('Caused by:', appError.cause);
+      logger.error('Caused by:', appError.cause);
     }
   }
-  
+
   // Throw the error if requested
   if (throwError) {
     throw appError;
   }
-  
+
   // Return error information
   return {
     success: false,

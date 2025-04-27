@@ -17,7 +17,16 @@
     "demo:ai-task-hierarchy": "node --experimental-modules demos/ai-task-hierarchy-demo.js",
     "demo:research-module": "node --experimental-modules demos/research-module-demo.js",
     "demo:dependency-management": "node --experimental-modules demos/dependency-management-demo.js",
-    "demo:enhanced-dependency-visualization": "node --experimental-modules demos/enhanced-dependency-visualization-demo.js"
+    "demo:enhanced-dependency-visualization": "node --experimental-modules demos/enhanced-dependency-visualization-demo.js",
+    "demo:flow": "node --experimental-modules demos/flow-demo.js",
+    "demo:research-flow": "node --experimental-modules demos/research-flow-demo.js",
+    "demo:gemini-test": "node --experimental-modules demos/gemini-test.js",
+    "demo:perplexity-test": "node --experimental-modules demos/perplexity-test.js",
+    "research": "node --experimental-modules demos/run-research-flow.js",
+    "mvp": "node --experimental-modules demos/mvp-demo.js",
+    "mvp:load-blueprint": "node --experimental-modules demos/load-blueprint-demo.js",
+    "mvp:list-blueprints": "node --experimental-modules demos/list-blueprints-demo.js",
+    "test:flow": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testPathPattern=flow"
   },
   "keywords": [
     "ai",

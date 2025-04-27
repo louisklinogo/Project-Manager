@@ -5,9 +5,59 @@
  */
 
 /**
+ * Generate a Mermaid diagram for task dependencies
+ * @param {Array} tasks - Array of tasks
+ * @param {Array} dependencies - Array of dependencies
+ * @returns {String} - Mermaid diagram
+ */
+export function generateMermaidDiagram(tasks, dependencies = []) {
+  try {
+    // Start the diagram
+    let diagram = 'graph TD;\n';
+
+    // Add nodes for each task
+    tasks.forEach(task => {
+      const taskId = task.id.replace ? task.id.replace(/-/g, '_') : task.id;
+      const taskTitle = task.title.replace ? task.title.replace(/"/g, "'") : task.title;
+      diagram += `  ${taskId}["${taskTitle}"];\n`;
+    });
+
+    // Add edges for dependencies
+    dependencies.forEach(dep => {
+      const sourceId = dep.source.replace ? dep.source.replace(/-/g, '_') : dep.source;
+      const targetId = dep.target.replace ? dep.target.replace(/-/g, '_') : dep.target;
+      diagram += `  ${sourceId} --> ${targetId};\n`;
+    });
+
+    // If no dependencies, create a simple linear flow
+    if (dependencies.length === 0 && tasks.length > 1) {
+      for (let i = 0; i < tasks.length - 1; i++) {
+        const sourceId = tasks[i].id.replace ? tasks[i].id.replace(/-/g, '_') : tasks[i].id;
+        const targetId = tasks[i + 1].id.replace ? tasks[i + 1].id.replace(/-/g, '_') : tasks[i + 1].id;
+        diagram += `  ${sourceId} --> ${targetId};\n`;
+      }
+    }
+
+    return diagram;
+  } catch (error) {
+    console.error('Error generating Mermaid diagram:', error);
+    return 'graph TD;\n  error["Error generating diagram"];\n';
+  }
+}
+
+/**
  * Dependency Visualizer class
  */
 export class DependencyVisualizer {
+  /**
+   * Generate a Mermaid diagram for task dependencies
+   * @param {Array} tasks - Array of tasks
+   * @param {Array} dependencies - Array of dependencies
+   * @returns {String} - Mermaid diagram
+   */
+  static generateMermaidDiagram(tasks, dependencies = []) {
+    return generateMermaidDiagram(tasks, dependencies);
+  }
   /**
    * Create a new dependency visualizer
    * @param {object} options - Visualizer options
