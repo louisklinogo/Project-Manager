@@ -1,0 +1,11 @@
+{
+  "valid": false,
+  "issues": [
+    {
+      "type": "locked_task_modified",
+      "taskId": "task-1-1",
+      "field": "implementation_guide",
+      "message": "Locked task task-1-1 had its implementation_guide modified"
+    }
+  ]
+}

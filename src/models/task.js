@@ -32,6 +32,13 @@ export class Task extends TaskInterface {
     this.validation_plan = data.validation_plan || null;
     this.parent_id = data.parent_id || null;
     this.completion_percentage = data.completion_percentage || 0;
+
+    // Work preservation properties
+    this.completion_history = data.completion_history || [];
+    this.version = data.version || 1;
+    this.locked = data.locked || false;
+    this.locked_at = data.locked_at || null;
+    this.notes = data.notes || [];
   }
 
   /**
@@ -469,5 +476,135 @@ export class Task extends TaskInterface {
   getPathString(allTasks) {
     const path = this.getPath(allTasks);
     return path.map(t => t.title).join(' > ');
+  }
+
+  /**
+   * Add a completion history entry
+   * @param {string} status - Status at the time of recording
+   * @param {number} completionPercentage - Completion percentage
+   * @param {object} metadata - Additional metadata
+   * @returns {object} - The created history entry
+   */
+  addCompletionHistoryEntry(status = this.status, completionPercentage = this.completion_percentage, metadata = {}) {
+    // Create the history entry
+    const entry = {
+      timestamp: new Date().toISOString(),
+      status,
+      completion_percentage: completionPercentage,
+      version: this.version,
+      metadata: { ...metadata }
+    };
+
+    // Initialize history array if it doesn't exist
+    if (!this.completion_history) {
+      this.completion_history = [];
+    }
+
+    // Add the entry
+    this.completion_history.push(entry);
+
+    // Increment version
+    this.version += 1;
+
+    // Update timestamp
+    this.updateTimestamp();
+
+    return entry;
+  }
+
+  /**
+   * Get the completion history
+   * @returns {Array} - Completion history entries
+   */
+  getCompletionHistory() {
+    return this.completion_history || [];
+  }
+
+  /**
+   * Check if the task is locked
+   * @returns {boolean} - Whether the task is locked
+   */
+  isLocked() {
+    return this.locked === true;
+  }
+
+  /**
+   * Lock the task to prevent modifications
+   * @param {string} reason - Reason for locking
+   * @returns {Task} - This task instance
+   */
+  lock(reason = 'Task completed') {
+    this.locked = true;
+    this.locked_at = new Date().toISOString();
+
+    // Add a note about locking
+    this.addNote('task_locked', reason);
+
+    return this;
+  }
+
+  /**
+   * Unlock the task to allow modifications
+   * @param {string} reason - Reason for unlocking
+   * @returns {Task} - This task instance
+   */
+  unlock(reason = 'Manual unlock') {
+    this.locked = false;
+    this.locked_at = null;
+
+    // Add a note about unlocking
+    this.addNote('task_unlocked', reason);
+
+    return this;
+  }
+
+  /**
+   * Add a note to the task
+   * @param {string} type - Note type
+   * @param {string} message - Note message
+   * @param {object} metadata - Additional metadata
+   * @returns {object} - The created note
+   */
+  addNote(type, message, metadata = {}) {
+    // Initialize notes array if it doesn't exist
+    if (!this.notes) {
+      this.notes = [];
+    }
+
+    // Create the note
+    const note = {
+      type,
+      message,
+      timestamp: new Date().toISOString(),
+      metadata: { ...metadata }
+    };
+
+    // Add the note
+    this.notes.push(note);
+
+    // Update timestamp
+    this.updateTimestamp();
+
+    return note;
+  }
+
+  /**
+   * Get notes of a specific type
+   * @param {string} type - Note type
+   * @returns {Array} - Notes of the specified type
+   */
+  getNotesByType(type) {
+    if (!this.notes) return [];
+
+    return this.notes.filter(note => note.type === type);
+  }
+
+  /**
+   * Update the task timestamp
+   * @returns {string} - Updated timestamp
+   */
+  updateTimestamp() {
+    this.updated_at = new Date().toISOString();
+    return this.updated_at;
   }
 }

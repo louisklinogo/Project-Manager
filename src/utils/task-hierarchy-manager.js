@@ -5,6 +5,7 @@
  */
 
 import { Task } from '../models/task.js';
+import { WorkPreservationManager } from './work-preservation.js';
 
 /**
  * Task Hierarchy Manager class
@@ -628,5 +629,157 @@ export class TaskHierarchyManager {
   getTaskPathString(task, allTasks, separator = ' > ') {
     const path = this.getTaskPath(task, allTasks);
     return path.map(t => t.title).join(separator);
+  }
+
+  /**
+   * Track completion history for all tasks in a hierarchy
+   * @param {Array} tasks - Tasks to update
+   * @returns {Array} - Updated tasks with completion history
+   */
+  trackCompletionHistory(tasks) {
+    if (!tasks || tasks.length === 0) {
+      return tasks;
+    }
+
+    // Create a deep copy of the tasks to avoid modifying the original
+    const tasksCopy = JSON.parse(JSON.stringify(tasks));
+
+    // Flatten the hierarchy for easier processing
+    const flatTasks = this.flattenHierarchy(tasksCopy);
+
+    // Create task instances
+    const taskInstances = flatTasks.map(task => new Task(task));
+
+    // Add completion history for each task
+    taskInstances.forEach(task => {
+      // Only add history for completed tasks
+      if (task.status === this.options.completedStatus) {
+        task.addCompletionHistoryEntry(
+          task.status,
+          task.completion_percentage,
+          { tracked_by: 'task_hierarchy_manager' }
+        );
+      }
+    });
+
+    // Rebuild the hierarchy
+    return this.buildHierarchy(taskInstances.map(task => ({
+      ...task,
+      subtasks: task.subtasks
+    })));
+  }
+
+  /**
+   * Lock completed tasks to prevent modifications
+   * @param {Array} tasks - Tasks to update
+   * @returns {Array} - Updated tasks with locked completed tasks
+   */
+  lockCompletedTasks(tasks) {
+    if (!tasks || tasks.length === 0) {
+      return tasks;
+    }
+
+    // Create a deep copy of the tasks to avoid modifying the original
+    const tasksCopy = JSON.parse(JSON.stringify(tasks));
+
+    // Flatten the hierarchy for easier processing
+    const flatTasks = this.flattenHierarchy(tasksCopy);
+
+    // Create task instances
+    const taskInstances = flatTasks.map(task => new Task(task));
+
+    // Lock completed tasks
+    taskInstances.forEach(task => {
+      if (task.status === this.options.completedStatus && !task.isLocked()) {
+        task.lock('Task completed and locked by task hierarchy manager');
+      }
+    });
+
+    // Rebuild the hierarchy
+    return this.buildHierarchy(taskInstances.map(task => ({
+      ...task,
+      subtasks: task.subtasks
+    })));
+  }
+
+  /**
+   * Validate task modifications against locked status
+   * @param {Array} originalTasks - Original tasks
+   * @param {Array} modifiedTasks - Modified tasks
+   * @returns {object} - Validation result with valid flag and issues array
+   */
+  validateModifications(originalTasks, modifiedTasks) {
+    if (!originalTasks || !modifiedTasks) {
+      return { valid: true, issues: [] };
+    }
+
+    // Flatten both hierarchies for easier processing
+    const flatOriginalTasks = this.flattenHierarchy(originalTasks);
+    const flatModifiedTasks = this.flattenHierarchy(modifiedTasks);
+
+    // Create maps for quick lookup
+    const originalTaskMap = new Map();
+    flatOriginalTasks.forEach(task => {
+      originalTaskMap.set(task.id, task);
+    });
+
+    // Check for modifications to locked tasks
+    const issues = [];
+
+    flatModifiedTasks.forEach(modifiedTask => {
+      const originalTask = originalTaskMap.get(modifiedTask.id);
+
+      // Skip if there's no matching original task
+      if (!originalTask) return;
+
+      // Check if the original task is locked
+      if (originalTask.locked) {
+        // Check for modifications to protected fields
+        const protectedFields = [
+          'implementation_guide',
+          'status',
+          'completion_percentage'
+        ];
+
+        protectedFields.forEach(field => {
+          if (JSON.stringify(originalTask[field]) !== JSON.stringify(modifiedTask[field])) {
+            issues.push({
+              type: 'locked_task_modified',
+              taskId: modifiedTask.id,
+              field,
+              message: `Locked task ${modifiedTask.id} had its ${field} modified`
+            });
+          }
+        });
+      }
+    });
+
+    return {
+      valid: issues.length === 0,
+      issues
+    };
+  }
+
+  /**
+   * Preserve completed work when updating tasks
+   * @param {Array} originalTasks - Original tasks
+   * @param {Array} updatedTasks - Updated tasks
+   * @returns {Array} - Merged tasks with preserved completed work
+   */
+  preserveCompletedWork(originalTasks, updatedTasks) {
+    if (!originalTasks || !updatedTasks) {
+      return updatedTasks;
+    }
+
+    // Create a new WorkPreservationManager instance
+    const workPreservationManager = new WorkPreservationManager({
+      completedStatus: this.options.completedStatus
+    });
+
+    // Preserve completed work
+    return workPreservationManager.preserveCompletedWorkForTaskList(
+      originalTasks,
+      updatedTasks
+    );
   }
 }
