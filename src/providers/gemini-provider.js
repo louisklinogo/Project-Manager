@@ -139,9 +139,21 @@ export class GeminiProvider extends AIProvider {
       }
     });
 
+    // Convert to a standardized format similar to OpenAI for easier integration
     return {
       provider: this.name,
       model,
+      choices: [
+        {
+          message: {
+            role: 'assistant',
+            content: response.response.text()
+          },
+          index: 0,
+          finish_reason: 'stop'
+        }
+      ],
+      // Also include the original format
       message: response.response.text(),
       raw: response
     };

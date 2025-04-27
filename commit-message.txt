@@ -1,0 +1,20 @@
+Implement Task Hierarchy with Real API Integration
+
+This commit completes Task 4.2: Task Hierarchy Implementation with:
+
+- Enhanced task model with hierarchical structure
+- Methods for managing subtasks (add, remove, update)
+- Consistent status tracking for tasks and subtasks
+- Task hierarchy visualization utilities
+- Real-world demonstration scripts with actual API calls
+- Comprehensive testing strategy document
+- Integration with Gemini API for generating task hierarchies
+- Preparation for Perplexity API integration for research
+
+The implementation follows our new testing strategy that combines:
+1. Unit tests with mocks
+2. Integration tests
+3. Real API demonstrations
+4. Documentation
+
+All tests are passing, and the real-world demonstrations work with actual API calls.

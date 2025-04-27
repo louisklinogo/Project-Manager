@@ -12,7 +12,10 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "start": "node index.js"
+    "start": "node index.js",
+    "demo:task-hierarchy": "node --experimental-modules demos/task-hierarchy-demo.js",
+    "demo:ai-task-hierarchy": "node --experimental-modules demos/ai-task-hierarchy-demo.js",
+    "demo:research-module": "node --experimental-modules demos/research-module-demo.js"
   },
   "keywords": [
     "ai",

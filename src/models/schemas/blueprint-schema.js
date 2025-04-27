@@ -129,6 +129,55 @@ export const blueprintSchema = {
           implementation_guide: {
             type: "string",
             description: "Detailed implementation instructions"
+          },
+          validation_plan: {
+            type: "object",
+            description: "Validation plan for the task",
+            properties: {
+              item_id: {
+                type: "string",
+                description: "ID of the item being validated"
+              },
+              item_type: {
+                type: "string",
+                description: "Type of the item being validated"
+              },
+              item_name: {
+                type: "string",
+                description: "Name of the item being validated"
+              },
+              criteria: {
+                type: "array",
+                description: "Validation criteria",
+                items: {
+                  type: "string"
+                }
+              },
+              validation_steps: {
+                type: "array",
+                description: "Steps for validating the item",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: {
+                      type: "string",
+                      description: "Name of the validation step"
+                    },
+                    description: {
+                      type: "string",
+                      description: "Description of the validation step"
+                    },
+                    actions: {
+                      type: "array",
+                      description: "Actions to perform for validation",
+                      items: {
+                        type: "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -161,6 +210,73 @@ export const blueprintSchema = {
                 description: "IDs of tasks associated with this step",
                 items: {
                   type: "string"
+                }
+              },
+              task_id: {
+                type: "string",
+                description: "ID of the task this step belongs to"
+              },
+              dependencies: {
+                type: "array",
+                description: "IDs of steps that this step depends on",
+                items: {
+                  type: "string"
+                }
+              },
+              validation_criteria: {
+                type: "array",
+                description: "Validation criteria for the step",
+                items: {
+                  type: "string"
+                }
+              },
+              validation_plan: {
+                type: "object",
+                description: "Validation plan for the step",
+                properties: {
+                  item_id: {
+                    type: "string",
+                    description: "ID of the item being validated"
+                  },
+                  item_type: {
+                    type: "string",
+                    description: "Type of the item being validated"
+                  },
+                  item_name: {
+                    type: "string",
+                    description: "Name of the item being validated"
+                  },
+                  criteria: {
+                    type: "array",
+                    description: "Validation criteria",
+                    items: {
+                      type: "string"
+                    }
+                  },
+                  validation_steps: {
+                    type: "array",
+                    description: "Steps for validating the item",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: {
+                          type: "string",
+                          description: "Name of the validation step"
+                        },
+                        description: {
+                          type: "string",
+                          description: "Description of the validation step"
+                        },
+                        actions: {
+                          type: "array",
+                          description: "Actions to perform for validation",
+                          items: {
+                            type: "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
