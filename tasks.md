@@ -539,6 +539,104 @@ We follow a feature branch workflow:
 - [ ] **COMMIT MILESTONE**: Blueprint testing implementation
 </details>
 
+### 📝 Task 5.6: PocketFlow Framework Enhancements
+
+<details>
+<summary><b>Documentation and Testing</b> 🟢 (High Priority)</summary>
+
+- [ ] Enhance PocketFlow documentation
+  - **Files**:
+    - `src/core/flow/README.md` - Update with detailed usage examples
+    - All flow files - Add comprehensive JSDoc comments
+  - **Pattern**: Create detailed documentation with examples for all components
+
+- [ ] Improve test coverage
+  - **Files**:
+    - `tests/unit/core/flow/*.test.js` - Enhance existing tests
+    - `tests/unit/core/flow/edge-cases.test.js` - Add edge case testing
+  - **Pattern**: Ensure comprehensive test coverage for all components
+
+- [ ] **TEST CHECKPOINT**: Verify documentation and test coverage
+  - **REQUIRED TEST COMMAND**: `npm test -- --testPathPattern=flow`
+</details>
+
+<details>
+<summary><b>Low-Risk Enhancements</b> 🟢 (High Priority)</summary>
+
+- [ ] Implement flow visualization
+  - **Files**:
+    - `src/core/flow/flow.js` - Add toMermaid() method
+    - `src/utils/flow-visualizer.js` - Create utility for rendering flow diagrams
+  - **Pattern**: Generate Mermaid diagrams from flow definitions
+
+- [ ] Add flow composition
+  - **Files**:
+    - `src/core/flow/flow-node.js` - Create FlowNode class
+    - `tests/unit/core/flow/flow-node.test.js` - Test flow composition
+  - **Pattern**: Allow flows to be used as nodes in other flows
+
+- [ ] Implement event system
+  - **Files**:
+    - `src/core/flow/flow.js` - Add event methods
+    - `src/core/flow/node.js` - Add event emission
+  - **Pattern**: Simple event system for monitoring flow execution
+
+- [ ] **TEST CHECKPOINT**: Verify low-risk enhancements
+  - **REQUIRED TEST COMMAND**: `npm test -- --testPathPattern=flow`
+</details>
+
+<details>
+<summary><b>Medium-Risk Enhancements</b> 🟡 (Medium Priority)</summary>
+
+- [ ] Implement conditional branching
+  - **Files**:
+    - `src/core/flow/conditional-node.js` - Create ConditionalNode class
+    - `tests/unit/core/flow/conditional-node.test.js` - Test conditional branching
+  - **Pattern**: Allow flows to branch based on conditions
+
+- [ ] Add schema validation
+  - **Files**:
+    - `src/core/flow/validated-node.js` - Create ValidatedNode class
+    - `tests/unit/core/flow/validated-node.test.js` - Test schema validation
+  - **Pattern**: Validate node inputs and outputs against schemas
+
+- [ ] Implement memoization
+  - **Files**:
+    - `src/core/flow/memoized-node.js` - Create MemoizedNode class
+    - `tests/unit/core/flow/memoized-node.test.js` - Test memoization
+  - **Pattern**: Cache node results for improved performance
+
+- [ ] **TEST CHECKPOINT**: Verify medium-risk enhancements
+  - **REQUIRED TEST COMMAND**: `npm test -- --testPathPattern=flow`
+</details>
+
+<details>
+<summary><b>Higher-Risk Enhancements</b> 🟠 (Lower Priority)</summary>
+
+- [ ] Implement retry mechanism
+  - **Files**:
+    - `src/core/flow/retry-node.js` - Create RetryNode class
+    - `tests/unit/core/flow/retry-node.test.js` - Test retry mechanism
+  - **Pattern**: Automatically retry failed operations
+
+- [ ] Add worker thread integration
+  - **Files**:
+    - `src/core/flow/worker-node.js` - Create WorkerNode class
+    - `src/core/flow/worker-pool.js` - Create WorkerPool class
+  - **Pattern**: Offload CPU-intensive operations to worker threads
+
+- [ ] Implement circuit breaker
+  - **Files**:
+    - `src/core/flow/circuit-breaker-node.js` - Create CircuitBreakerNode class
+    - `tests/unit/core/flow/circuit-breaker-node.test.js` - Test circuit breaker
+  - **Pattern**: Prevent cascading failures for external service calls
+
+- [ ] **TEST CHECKPOINT**: Verify higher-risk enhancements
+  - **REQUIRED TEST COMMAND**: `npm test -- --testPathPattern=flow`
+</details>
+
+- [ ] **COMMIT MILESTONE**: PocketFlow enhancements implementation
+
 ---
 
 ## 📅 Future Phases
@@ -548,10 +646,35 @@ We follow a feature branch workflow:
 <details>
 <summary><b>Task 6.1: MCP Server Implementation</b></summary>
 
-- [ ] Implement MCP server for Project-Manager
+- [ ] Implement MCP server for Project-Manager using JavaScript/Node.js
+  - **Files**:
+    - `src/mcp-server/server.js` - Create MCP server entry point
+    - `src/mcp-server/src/index.js` - Create server initialization
+    - `src/mcp-server/src/core/project-manager-core.js` - Create core function imports
+  - **Pattern**: Use FastMCP for server framework, similar to TaskMaster implementation
+
 - [ ] Create MCP tools for all Project-Manager functions
+  - **Files**:
+    - `src/mcp-server/src/tools/generate-blueprint.js` - Create blueprint generation tool
+    - `src/mcp-server/src/tools/research-project.js` - Create research tool
+    - `src/mcp-server/src/tools/load-blueprint.js` - Create blueprint loading tool
+  - **Pattern**: Follow FastMCP tool implementation pattern with Zod schemas
+
 - [ ] Implement authentication and authorization
+  - **Files**:
+    - `src/mcp-server/src/auth/auth-middleware.js` - Create authentication middleware
+    - `src/mcp-server/src/auth/auth-service.js` - Create authentication service
+  - **Pattern**: Implement JWT-based authentication with configurable permissions
+
 - [ ] Create documentation for MCP integration
+  - **Files**:
+    - `src/mcp-server/README.md` - Create MCP server documentation
+    - `src/mcp-server/TOOLS.md` - Create tool documentation
+    - `docs/MCP_INTEGRATION.md` - Create integration guide
+  - **Pattern**: Provide comprehensive documentation with examples
+
+- [ ] **REQUIRED TEST COMMAND**: `npm test -- --testPathPattern=mcp-server`
+- [ ] **VERIFICATION**: All tests must pass before marking this task as complete
 </details>
 
 <details>
@@ -591,37 +714,38 @@ We follow a feature branch workflow:
 </details>
 
 <details>
-<summary><b>Task 6.3: VS Code Extension</b></summary>
+<summary><b>Task 6.3: VS Code Extension (TypeScript)</b></summary>
 
-- [ ] Create VS Code extension
+- [ ] Create VS Code extension using TypeScript
   - **Files**:
     - `extensions/vscode/package.json` - Create extension manifest
-    - `extensions/vscode/extension.js` - Create extension entry point
-    - `extensions/vscode/views/blueprint-view.js` - Create blueprint view
-    - `extensions/vscode/views/task-view.js` - Create task view
-  - **Pattern**: Create VS Code extension with webview-based UI
+    - `extensions/vscode/tsconfig.json` - Create TypeScript configuration
+    - `extensions/vscode/src/extension.ts` - Create extension entry point
+    - `extensions/vscode/src/views/blueprint-view.ts` - Create blueprint view
+    - `extensions/vscode/src/views/task-view.ts` - Create task view
+  - **Pattern**: Create VS Code extension with TypeScript for better type safety and IDE support
 
 - [ ] Implement blueprint consumption
   - **Files**:
-    - `extensions/vscode/services/blueprint-service.js` - Create blueprint service
-    - `extensions/vscode/services/file-service.js` - Create file service
-    - `extensions/vscode/renderers/mermaid-renderer.js` - Create Mermaid renderer
-    - `extensions/vscode/renderers/task-table-renderer.js` - Create task table renderer
+    - `extensions/vscode/src/services/blueprint-service.ts` - Create blueprint service
+    - `extensions/vscode/src/services/file-service.ts` - Create file service
+    - `extensions/vscode/src/renderers/mermaid-renderer.ts` - Create Mermaid renderer
+    - `extensions/vscode/src/renderers/task-table-renderer.ts` - Create task table renderer
   - **Pattern**: Implement services for consuming and rendering blueprints
 
 - [ ] Build LLM guidance integration
   - **Files**:
-    - `extensions/vscode/services/llm-service.js` - Create LLM service
-    - `extensions/vscode/services/handoff-service.js` - Create handoff service
-    - `extensions/vscode/views/llm-guidance-view.js` - Create LLM guidance view
+    - `extensions/vscode/src/services/llm-service.ts` - Create LLM service
+    - `extensions/vscode/src/services/handoff-service.ts` - Create handoff service
+    - `extensions/vscode/src/views/llm-guidance-view.ts` - Create LLM guidance view
   - **Pattern**: Create services for integrating with LLMs and providing guidance
 
 - [ ] Develop user interface
   - **Files**:
-    - `extensions/vscode/webviews/blueprint-webview.js` - Create blueprint webview
-    - `extensions/vscode/webviews/task-webview.js` - Create task webview
-    - `extensions/vscode/webviews/research-webview.js` - Create research webview
-    - `extensions/vscode/webviews/css/styles.css` - Create styles for webviews
+    - `extensions/vscode/src/webviews/blueprint-webview.ts` - Create blueprint webview
+    - `extensions/vscode/src/webviews/task-webview.ts` - Create task webview
+    - `extensions/vscode/src/webviews/research-webview.ts` - Create research webview
+    - `extensions/vscode/src/webviews/css/styles.css` - Create styles for webviews
   - **Pattern**: Create webview-based UI with interactive components
 
 - [ ] **REQUIRED TEST COMMAND**: `npm test -- --testPathPattern=vscode-extension`
@@ -712,36 +836,49 @@ We follow a feature branch workflow:
    - Enhance Domain-Specific Knowledge Extraction (Medium Priority)
    - Improve Research Synthesis and Knowledge Management (Medium Priority)
    - Run tests: `npm test -- --testPathPattern=research`
-6. Implement Instruction Protocol (Task 5.2)
+6. Enhance PocketFlow Framework (Task 5.6)
+   - Improve documentation and test coverage (High Priority)
+   - Implement flow visualization with Mermaid (High Priority)
+   - Add flow composition capabilities (High Priority)
+   - Implement conditional branching (Medium Priority)
+   - Add schema validation (Medium Priority)
+   - Implement memoization for performance (Medium Priority)
+   - Run tests: `npm test -- --testPathPattern=flow`
+7. Implement Instruction Protocol (Task 5.2)
    - Design LLM-optimized instruction format
    - Implement context, objectives, constraints structure
    - Create example generation
    - Build error anticipation and handling
-   - Test with various LLMs
-7. Implement Blueprint Generation and Refinement (Task 5.3)
+   - Design AI assistant-specific instruction formats
+   - Test with various LLMs and AI coding assistants
+8. Implement Blueprint Generation and Refinement (Task 5.3)
    - Implement project planning algorithms
    - Create task breakdown and sequencing
    - Build dependency management integration
    - Develop acceptance criteria generation
    - Implement Blueprint Refinement System
    - Implement Co-Design and Brainstorming System
-8. Implement Blueprint Testing (Task 5.4)
+9. Implement Blueprint Testing (Task 5.4)
    - Create test suite for blueprint generation
    - Implement blueprint validation
    - Build quality metrics
    - Test with various LLMs for execution
-9. Implement the MCP Server & Integration (Task 6.1)
-10. Implement File Protocol for IDE Integration (Task 6.2)
+10. Implement the MCP Server & Integration (Task 6.1)
+    - Implement MCP server using JavaScript/Node.js
+    - Create MCP tools for all Project-Manager functions
+    - Implement authentication and authorization
+    - Create documentation for MCP integration
+11. Implement File Protocol for IDE Integration (Task 6.2)
     - Design file-based protocol for IDE integration
     - Implement blueprint serialization
     - Create file watchers and synchronization
     - Build IDE-agnostic interfaces
-11. Develop VS Code Extension (Task 6.3)
-    - Create VS Code extension
+12. Develop VS Code Extension (Task 6.3)
+    - Create VS Code extension using TypeScript
     - Implement blueprint consumption
     - Build LLM guidance integration
     - Develop user interface
-12. Implement AI Coding Assistant Integration (Task 6.4)
+13. Implement AI Coding Assistant Integration (Task 6.4)
     - Research AI assistant prompting patterns
     - Create assistant-specific instruction formats
     - Implement context preservation mechanisms
