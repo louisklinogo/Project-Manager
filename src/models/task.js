@@ -212,38 +212,157 @@ export class Task extends TaskInterface {
   /**
    * Check if the task has circular dependencies
    * @param {Array} allTasks - All tasks to check against
-   * @returns {boolean} - Whether the task has circular dependencies
+   * @returns {boolean|object} - False if no circular dependencies, or object with cycle info
    */
   hasCircularDependencies(allTasks) {
     const visited = new Set();
     const recStack = new Set();
+    const path = [];
 
     const hasCycle = (taskId) => {
+      // If we're already visiting this task in the current path, we found a cycle
       if (recStack.has(taskId)) {
-        return true;
+        return {
+          cycle: true,
+          path: [...path, taskId],
+          message: `Circular dependency detected: ${[...path, taskId].join(' -> ')}`
+        };
       }
 
+      // If we've already determined this task doesn't have cycles, return false
       if (visited.has(taskId)) {
         return false;
       }
 
+      // Mark the current task as being visited
       visited.add(taskId);
       recStack.add(taskId);
+      path.push(taskId);
 
+      // Find the task
       const task = allTasks.find(t => t.id === taskId);
-      if (task && task.dependencies) {
+      if (!task) {
+        // Task not found, can't have cycles
+        visited.delete(taskId);
+        recStack.delete(taskId);
+        path.pop();
+        return false;
+      }
+
+      // Check each dependency
+      if (task.dependencies) {
         for (const depId of task.dependencies) {
-          if (hasCycle(depId)) {
-            return true;
+          const result = hasCycle(depId);
+          if (result && result.cycle) {
+            // We found a cycle
+            visited.delete(taskId);
+            recStack.delete(taskId);
+            return result;
           }
         }
       }
 
+      // No cycles found for this task
       recStack.delete(taskId);
+      path.pop();
       return false;
     };
 
     return hasCycle(this.id);
+  }
+
+  /**
+   * Validate the task's dependencies
+   * @param {Array} allTasks - All tasks to check against
+   * @returns {object} - Validation result with valid flag and issues array
+   */
+  validateDependencies(allTasks) {
+    const issues = [];
+
+    // Check for missing dependencies
+    if (this.dependencies && this.dependencies.length > 0) {
+      this.dependencies.forEach(depId => {
+        // Check for self-dependencies
+        if (depId === this.id) {
+          issues.push({
+            type: 'self_dependency',
+            message: `Task ${this.id} depends on itself`
+          });
+          return;
+        }
+
+        // Check if the dependency exists
+        const depTask = allTasks.find(t => t.id === depId);
+        if (!depTask) {
+          issues.push({
+            type: 'missing_dependency',
+            dependencyId: depId,
+            message: `Task ${this.id} depends on non-existent task ${depId}`
+          });
+        }
+      });
+    }
+
+    // Check for circular dependencies
+    const circularResult = this.hasCircularDependencies(allTasks);
+    if (circularResult && circularResult.cycle) {
+      issues.push({
+        type: 'circular_dependency',
+        path: circularResult.path,
+        message: circularResult.message
+      });
+    }
+
+    // Check subtasks if present
+    if (this.subtasks && this.subtasks.length > 0) {
+      this.subtasks.forEach(subtask => {
+        if (!subtask.dependencies || subtask.dependencies.length === 0) {
+          return;
+        }
+
+        subtask.dependencies.forEach(depId => {
+          // Check for self-dependencies in subtasks
+          if (depId === subtask.id) {
+            issues.push({
+              type: 'self_dependency',
+              taskId: `${this.id}.${subtask.id}`,
+              message: `Subtask ${this.id}.${subtask.id} depends on itself`
+            });
+            return;
+          }
+
+          // If the dependency is a string, it might be a reference to another task
+          if (typeof depId === 'string') {
+            const depTask = allTasks.find(t => t.id === depId);
+            if (!depTask) {
+              issues.push({
+                type: 'missing_dependency',
+                taskId: `${this.id}.${subtask.id}`,
+                dependencyId: depId,
+                message: `Subtask ${this.id}.${subtask.id} depends on non-existent task ${depId}`
+              });
+            }
+          }
+          // If it's a number, it might be a reference to another subtask of the same parent
+          else if (typeof depId === 'number') {
+            const subtaskExists = this.subtasks.some(st => st.id === depId);
+            if (!subtaskExists) {
+              issues.push({
+                type: 'missing_dependency',
+                taskId: `${this.id}.${subtask.id}`,
+                dependencyId: `${this.id}.${depId}`,
+                message: `Subtask ${this.id}.${subtask.id} depends on non-existent subtask ${this.id}.${depId}`
+              });
+            }
+          }
+        });
+      });
+    }
+
+    return {
+      valid: issues.length === 0,
+      issues
+    };
   }
 
   /**

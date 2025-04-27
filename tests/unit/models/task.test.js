@@ -231,9 +231,14 @@ describe('Task', () => {
 
     const allTasks = [task1, task2, task3];
 
-    expect(task1.hasCircularDependencies(allTasks)).toBe(true);
-    expect(task2.hasCircularDependencies(allTasks)).toBe(true);
-    expect(task3.hasCircularDependencies(allTasks)).toBe(true);
+    // The return format is now an object with cycle info
+    const result1 = task1.hasCircularDependencies(allTasks);
+    const result2 = task2.hasCircularDependencies(allTasks);
+    const result3 = task3.hasCircularDependencies(allTasks);
+
+    expect(result1.cycle).toBe(true);
+    expect(result2.cycle).toBe(true);
+    expect(result3.cycle).toBe(true);
 
     // Test without circular dependencies
     const task4 = new Task({ id: 'task-4', dependencies: [] });
@@ -241,6 +246,7 @@ describe('Task', () => {
 
     const nonCircularTasks = [task4, task5];
 
+    // For non-circular dependencies, the method returns false
     expect(task4.hasCircularDependencies(nonCircularTasks)).toBe(false);
     expect(task5.hasCircularDependencies(nonCircularTasks)).toBe(false);
   });

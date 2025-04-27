@@ -1,6 +1,6 @@
 /**
  * Task Interface
- * 
+ *
  * This module defines the interface for task models with hierarchical structure.
  */
 
@@ -69,16 +69,71 @@ export class TaskInterface extends ModelInterface {
   /**
    * Add a dependency to the task
    * @param {string} dependencyId - Dependency ID
-   * @returns {void}
+   * @param {Array} allTasks - All tasks to check against for circular dependencies
+   * @returns {boolean} - Whether the dependency was added
    */
-  addDependency(dependencyId) {
+  addDependency(dependencyId, allTasks = []) {
+    // Don't allow self-dependencies
+    if (dependencyId === this.id) {
+      return false;
+    }
+
     if (!this.dependencies) {
       this.dependencies = [];
     }
-    if (!this.dependencies.includes(dependencyId)) {
-      this.dependencies.push(dependencyId);
-      this.updateTimestamp();
+
+    // Check if the dependency already exists
+    if (this.dependencies.includes(dependencyId)) {
+      return true; // Already exists, no need to add
     }
+
+    // Check for circular dependencies if allTasks is provided
+    if (allTasks.length > 0) {
+      // Create a temporary copy of the task with the new dependency
+      const tempTask = {
+        ...this,
+        dependencies: [...this.dependencies, dependencyId]
+      };
+
+      // Check if this would create a circular dependency
+      const visited = new Set();
+      const recStack = new Set();
+
+      const hasCycle = (taskId) => {
+        if (recStack.has(taskId)) {
+          return true;
+        }
+
+        if (visited.has(taskId)) {
+          return false;
+        }
+
+        visited.add(taskId);
+        recStack.add(taskId);
+
+        const task = taskId === this.id ? tempTask : allTasks.find(t => t.id === taskId);
+        if (task && task.dependencies) {
+          for (const depId of task.dependencies) {
+            if (hasCycle(depId)) {
+              return true;
+            }
+          }
+        }
+
+        recStack.delete(taskId);
+        return false;
+      };
+
+      // If adding this dependency would create a cycle, don't add it
+      if (hasCycle(this.id)) {
+        return false;
+      }
+    }
+
+    // Add the dependency
+    this.dependencies.push(dependencyId);
+    this.updateTimestamp();
+    return true;
   }
 
   /**
@@ -205,14 +260,21 @@ export class TaskInterface extends ModelInterface {
   /**
    * Add a subtask to the task
    * @param {object} subtask - Subtask
-   * @returns {void}
+   * @returns {object} - The added subtask
    */
   addSubtask(subtask) {
     if (!this.subtasks) {
       this.subtasks = [];
     }
+
+    // Ensure the subtask has a parent_id
+    subtask.parent_id = this.id;
+
+    // Add the subtask
     this.subtasks.push(subtask);
     this.updateTimestamp();
+
+    return subtask;
   }
 
   /**
@@ -224,7 +286,7 @@ export class TaskInterface extends ModelInterface {
     if (!this.subtasks) {
       return null;
     }
-    return this.subtasks.find(subtask => 
+    return this.subtasks.find(subtask =>
       subtask.id === subtaskId || subtask.id === Number(subtaskId)
     ) || null;
   }
@@ -239,13 +301,13 @@ export class TaskInterface extends ModelInterface {
     if (!this.subtasks) {
       return false;
     }
-    const subtaskIndex = this.subtasks.findIndex(subtask => 
+    const subtaskIndex = this.subtasks.findIndex(subtask =>
       subtask.id === subtaskId || subtask.id === Number(subtaskId)
     );
     if (subtaskIndex === -1) {
       return false;
     }
-    
+
     this.subtasks[subtaskIndex] = { ...this.subtasks[subtaskIndex], ...updates };
     this.updateTimestamp();
     return true;
@@ -260,13 +322,13 @@ export class TaskInterface extends ModelInterface {
     if (!this.subtasks) {
       return false;
     }
-    const subtaskIndex = this.subtasks.findIndex(subtask => 
+    const subtaskIndex = this.subtasks.findIndex(subtask =>
       subtask.id === subtaskId || subtask.id === Number(subtaskId)
     );
     if (subtaskIndex === -1) {
       return false;
     }
-    
+
     this.subtasks.splice(subtaskIndex, 1);
     this.updateTimestamp();
     return true;
@@ -281,7 +343,7 @@ export class TaskInterface extends ModelInterface {
     if (!this.subtasks || this.subtasks.length === 0) {
       return 0;
     }
-    
+
     let count = 0;
     this.subtasks.forEach(subtask => {
       if (subtask.status !== status) {
@@ -289,11 +351,11 @@ export class TaskInterface extends ModelInterface {
         count++;
       }
     });
-    
+
     if (count > 0) {
       this.updateTimestamp();
     }
-    
+
     return count;
   }
 
@@ -306,7 +368,7 @@ export class TaskInterface extends ModelInterface {
     if (!this.subtasks || this.subtasks.length === 0) {
       return true;
     }
-    
+
     return this.subtasks.every(subtask => subtask.status === status);
   }
 
@@ -319,7 +381,7 @@ export class TaskInterface extends ModelInterface {
     if (!this.subtasks || this.subtasks.length === 0) {
       return 0;
     }
-    
+
     return this.subtasks.filter(subtask => subtask.status === status).length;
   }
 
@@ -332,7 +394,7 @@ export class TaskInterface extends ModelInterface {
     if (!this.subtasks || this.subtasks.length === 0) {
       return 0;
     }
-    
+
     const completedCount = this.getSubtaskCountByStatus(completedStatus);
     return Math.round((completedCount / this.subtasks.length) * 100);
   }

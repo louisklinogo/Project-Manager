@@ -15,7 +15,8 @@
     "start": "node index.js",
     "demo:task-hierarchy": "node --experimental-modules demos/task-hierarchy-demo.js",
     "demo:ai-task-hierarchy": "node --experimental-modules demos/ai-task-hierarchy-demo.js",
-    "demo:research-module": "node --experimental-modules demos/research-module-demo.js"
+    "demo:research-module": "node --experimental-modules demos/research-module-demo.js",
+    "demo:dependency-management": "node --experimental-modules demos/dependency-management-demo.js"
   },
   "keywords": [
     "ai",
