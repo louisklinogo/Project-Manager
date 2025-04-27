@@ -16,7 +16,8 @@
     "demo:task-hierarchy": "node --experimental-modules demos/task-hierarchy-demo.js",
     "demo:ai-task-hierarchy": "node --experimental-modules demos/ai-task-hierarchy-demo.js",
     "demo:research-module": "node --experimental-modules demos/research-module-demo.js",
-    "demo:dependency-management": "node --experimental-modules demos/dependency-management-demo.js"
+    "demo:dependency-management": "node --experimental-modules demos/dependency-management-demo.js",
+    "demo:enhanced-dependency-visualization": "node --experimental-modules demos/enhanced-dependency-visualization-demo.js"
   },
   "keywords": [
     "ai",
@@ -37,10 +38,12 @@
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.5",
     "commander": "^11.1.0",
+    "d3": "^7.9.0",
     "dotenv": "^16.5.0",
     "fastmcp": "^1.20.5",
     "figlet": "^1.8.0",
     "inquirer": "^12.5.0",
+    "mermaid": "^11.6.0",
     "openai": "^4.96.0",
     "ora": "^8.2.0",
     "uuid": "^11.1.0"

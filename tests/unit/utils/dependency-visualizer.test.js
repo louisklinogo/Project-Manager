@@ -3,6 +3,7 @@
  */
 
 import { DependencyVisualizer } from '../../../src/utils/dependency-visualizer.js';
+import { Task } from '../../../src/models/task.js';
 
 describe('DependencyVisualizer', () => {
   let visualizer;
@@ -176,6 +177,120 @@ describe('DependencyVisualizer', () => {
       expect(jsonResult).toHaveProperty('circular_dependencies');
       expect(jsonResult.tasks[0]).toHaveProperty('has_circular_dependency');
       expect(jsonResult.tasks[1]).toHaveProperty('has_circular_dependency');
+    });
+  });
+
+  describe('visualizeDependencies with Mermaid format', () => {
+    test('should generate a Mermaid diagram', () => {
+      // Set the visualizer to use Mermaid format
+      visualizer = new DependencyVisualizer({
+        format: 'mermaid'
+      });
+
+      const tasks = [
+        { id: 'task-1', title: 'Task 1', dependencies: ['task-2'] },
+        { id: 'task-2', title: 'Task 2', dependencies: [] }
+      ];
+
+      const result = visualizer.visualizeDependencies(tasks);
+
+      // Check for Mermaid syntax
+      expect(result).toContain('```mermaid');
+      expect(result).toContain('flowchart TD');
+      expect(result).toContain('task-1["task-1: Task 1"]');
+      expect(result).toContain('task-2["task-2: Task 2"]');
+      expect(result).toContain('style task-1');
+      expect(result).toContain('style task-2');
+      expect(result).toContain('```');
+      expect(result).toContain('### Legend');
+    });
+
+    test('should highlight circular dependencies in Mermaid', () => {
+      // Set the visualizer to use Mermaid format with circular dependency highlighting
+      visualizer = new DependencyVisualizer({
+        format: 'mermaid',
+        highlightCircularDependencies: true
+      });
+
+      const tasks = [
+        { id: 'task-1', title: 'Task 1', dependencies: ['task-2'] },
+        { id: 'task-2', title: 'Task 2', dependencies: ['task-1'] }
+      ];
+
+      const result = visualizer.visualizeDependencies(tasks);
+
+      // Check for circular dependency styling
+      expect(result).toContain('fill:#FFEBEE,stroke:#D32F2F');
+      expect(result).toContain('stroke:#D32F2F,stroke-width:2px');
+      expect(result).toContain('Red nodes and edges: Circular dependencies');
+    });
+  });
+
+  describe('visualizeDependencies with interactive HTML', () => {
+    test('should generate an interactive HTML visualization', () => {
+      // Set the visualizer to use HTML format with interactive features
+      visualizer = new DependencyVisualizer({
+        format: 'html',
+        interactive: true
+      });
+
+      const tasks = [
+        { id: 'task-1', title: 'Task 1', dependencies: ['task-2'] },
+        { id: 'task-2', title: 'Task 2', dependencies: [] }
+      ];
+
+      const result = visualizer.visualizeDependencies(tasks);
+
+      // Check for interactive features
+      expect(result).toContain('<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>');
+      expect(result).toContain('<div class="mermaid">');
+      expect(result).toContain('flowchart TD');
+      expect(result).toContain('<div class="sidebar">');
+      expect(result).toContain('<div class="controls">');
+      expect(result).toContain('<button id="zoom-in">Zoom In</button>');
+      expect(result).toContain('<button id="zoom-out">Zoom Out</button>');
+      expect(result).toContain('<button id="reset">Reset</button>');
+      expect(result).toContain('mermaid.initialize({');
+    });
+
+    test('should generate a collapsible HTML visualization', () => {
+      // Set the visualizer to use HTML format with interactive and collapsible features
+      visualizer = new DependencyVisualizer({
+        format: 'html',
+        interactive: true,
+        collapsible: true
+      });
+
+      const tasks = [
+        { id: 'task-1', title: 'Task 1', dependencies: ['task-2'] },
+        { id: 'task-2', title: 'Task 2', dependencies: [] }
+      ];
+
+      const result = visualizer.visualizeDependencies(tasks);
+
+      // Check for collapsible features
+      expect(result).toContain('.collapsible {');
+      expect(result).toContain('<button id="toggle-all">Expand/Collapse All</button>');
+      expect(result).toContain('// Collapsible sections');
+    });
+
+    test('should use the specified theme', () => {
+      // Set the visualizer to use HTML format with a custom theme
+      visualizer = new DependencyVisualizer({
+        format: 'html',
+        interactive: true,
+        theme: 'forest'
+      });
+
+      const tasks = [
+        { id: 'task-1', title: 'Task 1', dependencies: ['task-2'] },
+        { id: 'task-2', title: 'Task 2', dependencies: [] }
+      ];
+
+      const result = visualizer.visualizeDependencies(tasks);
+
+      // Check for theme setting
+      expect(result).toContain('theme: \'forest\'');
     });
   });
 
