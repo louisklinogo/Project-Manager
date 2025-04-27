@@ -5,6 +5,7 @@
  */
 
 import { Task } from '../models/task.js';
+import { WorkPreservationManager } from './work-preservation.js';
 
 /**
  * Task Hierarchy Manager class
@@ -282,9 +283,179 @@ export class TaskHierarchyManager {
     const taskInstances = flatTasks.map(task => new Task(task));
 
     // Find tasks with circular dependencies
-    return taskInstances
-      .filter(task => task.hasCircularDependencies(taskInstances))
-      .map(task => task.id);
+    const circularDependencies = [];
+
+    taskInstances.forEach(task => {
+      const result = task.hasCircularDependencies(taskInstances);
+      if (result && result.cycle) {
+        circularDependencies.push({
+          taskId: task.id,
+          path: result.path,
+          message: result.message
+        });
+      }
+    });
+
+    return circularDependencies;
+  }
+
+  /**
+   * Validate dependencies in a task hierarchy
+   * @param {Array} tasks - Tasks to validate
+   * @returns {object} - Validation result with valid flag and issues array
+   */
+  validateDependencies(tasks) {
+    if (!tasks || tasks.length === 0) {
+      return { valid: true, issues: [] };
+    }
+
+    // Flatten the hierarchy for easier validation
+    const flatTasks = this.flattenHierarchy(tasks);
+
+    // Create task instances
+    const taskInstances = flatTasks.map(task => new Task(task));
+
+    // Validate dependencies for each task
+    const allIssues = [];
+
+    taskInstances.forEach(task => {
+      const result = task.validateDependencies(taskInstances);
+      if (!result.valid) {
+        allIssues.push(...result.issues);
+      }
+    });
+
+    return {
+      valid: allIssues.length === 0,
+      issues: allIssues
+    };
+  }
+
+  /**
+   * Fix dependency issues in a task hierarchy
+   * @param {Array} tasks - Tasks to fix
+   * @returns {object} - Fix result with tasks and changes
+   */
+  fixDependencyIssues(tasks) {
+    if (!tasks || tasks.length === 0) {
+      return { tasks: [], changes: [] };
+    }
+
+    // Create a deep copy of the tasks to avoid modifying the original
+    const tasksCopy = JSON.parse(JSON.stringify(tasks));
+    const changes = [];
+
+    // Flatten the hierarchy for easier fixing
+    const flatTasks = this.flattenHierarchy(tasksCopy);
+
+    // Fix self-dependencies
+    flatTasks.forEach(task => {
+      if (task.dependencies && task.dependencies.includes(task.id)) {
+        const index = task.dependencies.indexOf(task.id);
+        task.dependencies.splice(index, 1);
+        changes.push({
+          type: 'remove_self_dependency',
+          taskId: task.id,
+          message: `Removed self-dependency from task ${task.id}`
+        });
+      }
+
+      // Fix self-dependencies in subtasks
+      if (task.subtasks && task.subtasks.length > 0) {
+        task.subtasks.forEach(subtask => {
+          if (subtask.dependencies && subtask.dependencies.includes(subtask.id)) {
+            const index = subtask.dependencies.indexOf(subtask.id);
+            subtask.dependencies.splice(index, 1);
+            changes.push({
+              type: 'remove_self_dependency',
+              taskId: `${task.id}.${subtask.id}`,
+              message: `Removed self-dependency from subtask ${task.id}.${subtask.id}`
+            });
+          }
+        });
+      }
+    });
+
+    // Fix missing dependencies
+    const taskIds = new Set(flatTasks.map(task => task.id));
+
+    flatTasks.forEach(task => {
+      if (task.dependencies && task.dependencies.length > 0) {
+        const originalDeps = [...task.dependencies];
+        task.dependencies = task.dependencies.filter(depId => taskIds.has(depId));
+
+        if (task.dependencies.length !== originalDeps.length) {
+          const removedDeps = originalDeps.filter(depId => !task.dependencies.includes(depId));
+          changes.push({
+            type: 'remove_missing_dependency',
+            taskId: task.id,
+            dependencyIds: removedDeps,
+            message: `Removed missing dependencies from task ${task.id}: ${removedDeps.join(', ')}`
+          });
+        }
+      }
+
+      // Fix missing dependencies in subtasks
+      if (task.subtasks && task.subtasks.length > 0) {
+        task.subtasks.forEach(subtask => {
+          if (subtask.dependencies && subtask.dependencies.length > 0) {
+            const originalDeps = [...subtask.dependencies];
+
+            // Filter out dependencies that don't exist
+            subtask.dependencies = subtask.dependencies.filter(depId => {
+              if (typeof depId === 'string') {
+                return taskIds.has(depId);
+              } else if (typeof depId === 'number') {
+                return task.subtasks.some(st => st.id === depId);
+              }
+              return false;
+            });
+
+            if (subtask.dependencies.length !== originalDeps.length) {
+              const removedDeps = originalDeps.filter(depId => !subtask.dependencies.includes(depId));
+              changes.push({
+                type: 'remove_missing_dependency',
+                taskId: `${task.id}.${subtask.id}`,
+                dependencyIds: removedDeps,
+                message: `Removed missing dependencies from subtask ${task.id}.${subtask.id}: ${removedDeps.join(', ')}`
+              });
+            }
+          }
+        });
+      }
+    });
+
+    // Fix circular dependencies
+    const circularDeps = this.findCircularDependencies(flatTasks);
+
+    circularDeps.forEach(circular => {
+      if (circular.path && circular.path.length >= 2) {
+        // Break the cycle by removing the last dependency in the path
+        const lastTaskId = circular.path[circular.path.length - 1];
+        const secondLastTaskId = circular.path[circular.path.length - 2];
+
+        const task = flatTasks.find(t => t.id === secondLastTaskId);
+        if (task && task.dependencies) {
+          const index = task.dependencies.indexOf(lastTaskId);
+          if (index !== -1) {
+            task.dependencies.splice(index, 1);
+            changes.push({
+              type: 'remove_circular_dependency',
+              taskId: secondLastTaskId,
+              dependencyId: lastTaskId,
+              path: circular.path,
+              message: `Removed circular dependency ${lastTaskId} from task ${secondLastTaskId}`
+            });
+          }
+        }
+      }
+    });
+
+    // Rebuild the hierarchy
+    return {
+      tasks: this.buildHierarchy(flatTasks),
+      changes
+    };
   }
 
   /**
@@ -458,5 +629,157 @@ export class TaskHierarchyManager {
   getTaskPathString(task, allTasks, separator = ' > ') {
     const path = this.getTaskPath(task, allTasks);
     return path.map(t => t.title).join(separator);
+  }
+
+  /**
+   * Track completion history for all tasks in a hierarchy
+   * @param {Array} tasks - Tasks to update
+   * @returns {Array} - Updated tasks with completion history
+   */
+  trackCompletionHistory(tasks) {
+    if (!tasks || tasks.length === 0) {
+      return tasks;
+    }
+
+    // Create a deep copy of the tasks to avoid modifying the original
+    const tasksCopy = JSON.parse(JSON.stringify(tasks));
+
+    // Flatten the hierarchy for easier processing
+    const flatTasks = this.flattenHierarchy(tasksCopy);
+
+    // Create task instances
+    const taskInstances = flatTasks.map(task => new Task(task));
+
+    // Add completion history for each task
+    taskInstances.forEach(task => {
+      // Only add history for completed tasks
+      if (task.status === this.options.completedStatus) {
+        task.addCompletionHistoryEntry(
+          task.status,
+          task.completion_percentage,
+          { tracked_by: 'task_hierarchy_manager' }
+        );
+      }
+    });
+
+    // Rebuild the hierarchy
+    return this.buildHierarchy(taskInstances.map(task => ({
+      ...task,
+      subtasks: task.subtasks
+    })));
+  }
+
+  /**
+   * Lock completed tasks to prevent modifications
+   * @param {Array} tasks - Tasks to update
+   * @returns {Array} - Updated tasks with locked completed tasks
+   */
+  lockCompletedTasks(tasks) {
+    if (!tasks || tasks.length === 0) {
+      return tasks;
+    }
+
+    // Create a deep copy of the tasks to avoid modifying the original
+    const tasksCopy = JSON.parse(JSON.stringify(tasks));
+
+    // Flatten the hierarchy for easier processing
+    const flatTasks = this.flattenHierarchy(tasksCopy);
+
+    // Create task instances
+    const taskInstances = flatTasks.map(task => new Task(task));
+
+    // Lock completed tasks
+    taskInstances.forEach(task => {
+      if (task.status === this.options.completedStatus && !task.isLocked()) {
+        task.lock('Task completed and locked by task hierarchy manager');
+      }
+    });
+
+    // Rebuild the hierarchy
+    return this.buildHierarchy(taskInstances.map(task => ({
+      ...task,
+      subtasks: task.subtasks
+    })));
+  }
+
+  /**
+   * Validate task modifications against locked status
+   * @param {Array} originalTasks - Original tasks
+   * @param {Array} modifiedTasks - Modified tasks
+   * @returns {object} - Validation result with valid flag and issues array
+   */
+  validateModifications(originalTasks, modifiedTasks) {
+    if (!originalTasks || !modifiedTasks) {
+      return { valid: true, issues: [] };
+    }
+
+    // Flatten both hierarchies for easier processing
+    const flatOriginalTasks = this.flattenHierarchy(originalTasks);
+    const flatModifiedTasks = this.flattenHierarchy(modifiedTasks);
+
+    // Create maps for quick lookup
+    const originalTaskMap = new Map();
+    flatOriginalTasks.forEach(task => {
+      originalTaskMap.set(task.id, task);
+    });
+
+    // Check for modifications to locked tasks
+    const issues = [];
+
+    flatModifiedTasks.forEach(modifiedTask => {
+      const originalTask = originalTaskMap.get(modifiedTask.id);
+
+      // Skip if there's no matching original task
+      if (!originalTask) return;
+
+      // Check if the original task is locked
+      if (originalTask.locked) {
+        // Check for modifications to protected fields
+        const protectedFields = [
+          'implementation_guide',
+          'status',
+          'completion_percentage'
+        ];
+
+        protectedFields.forEach(field => {
+          if (JSON.stringify(originalTask[field]) !== JSON.stringify(modifiedTask[field])) {
+            issues.push({
+              type: 'locked_task_modified',
+              taskId: modifiedTask.id,
+              field,
+              message: `Locked task ${modifiedTask.id} had its ${field} modified`
+            });
+          }
+        });
+      }
+    });
+
+    return {
+      valid: issues.length === 0,
+      issues
+    };
+  }
+
+  /**
+   * Preserve completed work when updating tasks
+   * @param {Array} originalTasks - Original tasks
+   * @param {Array} updatedTasks - Updated tasks
+   * @returns {Array} - Merged tasks with preserved completed work
+   */
+  preserveCompletedWork(originalTasks, updatedTasks) {
+    if (!originalTasks || !updatedTasks) {
+      return updatedTasks;
+    }
+
+    // Create a new WorkPreservationManager instance
+    const workPreservationManager = new WorkPreservationManager({
+      completedStatus: this.options.completedStatus
+    });
+
+    // Preserve completed work
+    return workPreservationManager.preserveCompletedWorkForTaskList(
+      originalTasks,
+      updatedTasks
+    );
   }
 }

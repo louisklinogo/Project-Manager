@@ -32,6 +32,13 @@ export class Task extends TaskInterface {
     this.validation_plan = data.validation_plan || null;
     this.parent_id = data.parent_id || null;
     this.completion_percentage = data.completion_percentage || 0;
+
+    // Work preservation properties
+    this.completion_history = data.completion_history || [];
+    this.version = data.version || 1;
+    this.locked = data.locked || false;
+    this.locked_at = data.locked_at || null;
+    this.notes = data.notes || [];
   }
 
   /**
@@ -212,38 +219,157 @@ export class Task extends TaskInterface {
   /**
    * Check if the task has circular dependencies
    * @param {Array} allTasks - All tasks to check against
-   * @returns {boolean} - Whether the task has circular dependencies
+   * @returns {boolean|object} - False if no circular dependencies, or object with cycle info
    */
   hasCircularDependencies(allTasks) {
     const visited = new Set();
     const recStack = new Set();
+    const path = [];
 
     const hasCycle = (taskId) => {
+      // If we're already visiting this task in the current path, we found a cycle
       if (recStack.has(taskId)) {
-        return true;
+        return {
+          cycle: true,
+          path: [...path, taskId],
+          message: `Circular dependency detected: ${[...path, taskId].join(' -> ')}`
+        };
       }
 
+      // If we've already determined this task doesn't have cycles, return false
       if (visited.has(taskId)) {
         return false;
       }
 
+      // Mark the current task as being visited
       visited.add(taskId);
       recStack.add(taskId);
+      path.push(taskId);
 
+      // Find the task
       const task = allTasks.find(t => t.id === taskId);
-      if (task && task.dependencies) {
+      if (!task) {
+        // Task not found, can't have cycles
+        visited.delete(taskId);
+        recStack.delete(taskId);
+        path.pop();
+        return false;
+      }
+
+      // Check each dependency
+      if (task.dependencies) {
         for (const depId of task.dependencies) {
-          if (hasCycle(depId)) {
-            return true;
+          const result = hasCycle(depId);
+          if (result && result.cycle) {
+            // We found a cycle
+            visited.delete(taskId);
+            recStack.delete(taskId);
+            return result;
           }
         }
       }
 
+      // No cycles found for this task
       recStack.delete(taskId);
+      path.pop();
       return false;
     };
 
     return hasCycle(this.id);
+  }
+
+  /**
+   * Validate the task's dependencies
+   * @param {Array} allTasks - All tasks to check against
+   * @returns {object} - Validation result with valid flag and issues array
+   */
+  validateDependencies(allTasks) {
+    const issues = [];
+
+    // Check for missing dependencies
+    if (this.dependencies && this.dependencies.length > 0) {
+      this.dependencies.forEach(depId => {
+        // Check for self-dependencies
+        if (depId === this.id) {
+          issues.push({
+            type: 'self_dependency',
+            message: `Task ${this.id} depends on itself`
+          });
+          return;
+        }
+
+        // Check if the dependency exists
+        const depTask = allTasks.find(t => t.id === depId);
+        if (!depTask) {
+          issues.push({
+            type: 'missing_dependency',
+            dependencyId: depId,
+            message: `Task ${this.id} depends on non-existent task ${depId}`
+          });
+        }
+      });
+    }
+
+    // Check for circular dependencies
+    const circularResult = this.hasCircularDependencies(allTasks);
+    if (circularResult && circularResult.cycle) {
+      issues.push({
+        type: 'circular_dependency',
+        path: circularResult.path,
+        message: circularResult.message
+      });
+    }
+
+    // Check subtasks if present
+    if (this.subtasks && this.subtasks.length > 0) {
+      this.subtasks.forEach(subtask => {
+        if (!subtask.dependencies || subtask.dependencies.length === 0) {
+          return;
+        }
+
+        subtask.dependencies.forEach(depId => {
+          // Check for self-dependencies in subtasks
+          if (depId === subtask.id) {
+            issues.push({
+              type: 'self_dependency',
+              taskId: `${this.id}.${subtask.id}`,
+              message: `Subtask ${this.id}.${subtask.id} depends on itself`
+            });
+            return;
+          }
+
+          // If the dependency is a string, it might be a reference to another task
+          if (typeof depId === 'string') {
+            const depTask = allTasks.find(t => t.id === depId);
+            if (!depTask) {
+              issues.push({
+                type: 'missing_dependency',
+                taskId: `${this.id}.${subtask.id}`,
+                dependencyId: depId,
+                message: `Subtask ${this.id}.${subtask.id} depends on non-existent task ${depId}`
+              });
+            }
+          }
+          // If it's a number, it might be a reference to another subtask of the same parent
+          else if (typeof depId === 'number') {
+            const subtaskExists = this.subtasks.some(st => st.id === depId);
+            if (!subtaskExists) {
+              issues.push({
+                type: 'missing_dependency',
+                taskId: `${this.id}.${subtask.id}`,
+                dependencyId: `${this.id}.${depId}`,
+                message: `Subtask ${this.id}.${subtask.id} depends on non-existent subtask ${this.id}.${depId}`
+              });
+            }
+          }
+        });
+      });
+    }
+
+    return {
+      valid: issues.length === 0,
+      issues
+    };
   }
 
   /**
@@ -350,5 +476,135 @@ export class Task extends TaskInterface {
   getPathString(allTasks) {
     const path = this.getPath(allTasks);
     return path.map(t => t.title).join(' > ');
+  }
+
+  /**
+   * Add a completion history entry
+   * @param {string} status - Status at the time of recording
+   * @param {number} completionPercentage - Completion percentage
+   * @param {object} metadata - Additional metadata
+   * @returns {object} - The created history entry
+   */
+  addCompletionHistoryEntry(status = this.status, completionPercentage = this.completion_percentage, metadata = {}) {
+    // Create the history entry
+    const entry = {
+      timestamp: new Date().toISOString(),
+      status,
+      completion_percentage: completionPercentage,
+      version: this.version,
+      metadata: { ...metadata }
+    };
+
+    // Initialize history array if it doesn't exist
+    if (!this.completion_history) {
+      this.completion_history = [];
+    }
+
+    // Add the entry
+    this.completion_history.push(entry);
+
+    // Increment version
+    this.version += 1;
+
+    // Update timestamp
+    this.updateTimestamp();
+
+    return entry;
+  }
+
+  /**
+   * Get the completion history
+   * @returns {Array} - Completion history entries
+   */
+  getCompletionHistory() {
+    return this.completion_history || [];
+  }
+
+  /**
+   * Check if the task is locked
+   * @returns {boolean} - Whether the task is locked
+   */
+  isLocked() {
+    return this.locked === true;
+  }
+
+  /**
+   * Lock the task to prevent modifications
+   * @param {string} reason - Reason for locking
+   * @returns {Task} - This task instance
+   */
+  lock(reason = 'Task completed') {
+    this.locked = true;
+    this.locked_at = new Date().toISOString();
+
+    // Add a note about locking
+    this.addNote('task_locked', reason);
+
+    return this;
+  }
+
+  /**
+   * Unlock the task to allow modifications
+   * @param {string} reason - Reason for unlocking
+   * @returns {Task} - This task instance
+   */
+  unlock(reason = 'Manual unlock') {
+    this.locked = false;
+    this.locked_at = null;
+
+    // Add a note about unlocking
+    this.addNote('task_unlocked', reason);
+
+    return this;
+  }
+
+  /**
+   * Add a note to the task
+   * @param {string} type - Note type
+   * @param {string} message - Note message
+   * @param {object} metadata - Additional metadata
+   * @returns {object} - The created note
+   */
+  addNote(type, message, metadata = {}) {
+    // Initialize notes array if it doesn't exist
+    if (!this.notes) {
+      this.notes = [];
+    }
+
+    // Create the note
+    const note = {
+      type,
+      message,
+      timestamp: new Date().toISOString(),
+      metadata: { ...metadata }
+    };
+
+    // Add the note
+    this.notes.push(note);
+
+    // Update timestamp
+    this.updateTimestamp();
+
+    return note;
+  }
+
+  /**
+   * Get notes of a specific type
+   * @param {string} type - Note type
+   * @returns {Array} - Notes of the specified type
+   */
+  getNotesByType(type) {
+    if (!this.notes) return [];
+
+    return this.notes.filter(note => note.type === type);
+  }
+
+  /**
+   * Update the task timestamp
+   * @returns {string} - Updated timestamp
+   */
+  updateTimestamp() {
+    this.updated_at = new Date().toISOString();
+    return this.updated_at;
   }
 }
