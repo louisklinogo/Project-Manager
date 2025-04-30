@@ -96,10 +96,10 @@ This document tracks the progress of the file structure reorganization for the P
 
 ## Phase 8: Move Generated Files
 
-- [ ] 8.1. Move and organize generated files
-  - [ ] 8.1.1. Move `/project-manager/coverage` to `/reports/coverage`
-  - [ ] 8.1.2. Move `/project-manager/test-report` to `/reports/test`
-  - [ ] 8.1.3. Create `/reports/README.md` explaining the reports
+- [x] 8.1. Move and organize generated files
+  - [x] 8.1.1. Move `/project-manager/coverage` to `/reports/coverage`
+  - [x] 8.1.2. Move `/project-manager/test-report` to `/reports/test`
+  - [x] 8.1.3. Create `/reports/README.md` explaining the reports
 
 ## Phase 9: Update File References
 
