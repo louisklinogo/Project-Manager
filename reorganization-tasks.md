@@ -82,9 +82,9 @@ This document tracks the progress of the file structure reorganization for the P
 
 ## Phase 6: Move Reference Code
 
-- [ ] 6.1. Rename and move reference code
-  - [ ] 6.1.1. Rename `/claude-task-master` to `/reference`
-  - [ ] 6.1.2. Create `/reference/README.md` explaining the reference code
+- [x] 6.1. Rename and move reference code
+  - [x] 6.1.1. Rename `/claude-task-master` to `/reference`
+  - [x] 6.1.2. Create `/reference/README.md` explaining the reference code
 
 ## Phase 7: Move Configuration Files
 
