@@ -162,10 +162,10 @@ This document tracks the progress of the file structure reorganization for the P
   - [x] 12.2.6. Remove scripts-new directory
   - [x] 12.2.7. Remove temp-reorganization directory
 
-- [ ] 12.3. Commit changes to version control
-  - [ ] 12.3.1. Add all changes to git
-  - [ ] 12.3.2. Commit changes with descriptive message
-  - [ ] 12.3.3. Push changes to remote repository (if applicable)
+- [x] 12.3. Commit changes to version control
+  - [x] 12.3.1. Add all changes to git
+  - [x] 12.3.2. Commit changes with descriptive message
+  - [x] 12.3.3. Push changes to remote repository (if applicable)
 
 ## Phase 13: Future Improvements
 
