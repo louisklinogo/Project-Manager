@@ -48,12 +48,12 @@ This document tracks the progress of the file structure reorganization for the P
 
 ## Phase 3: Move Source Code
 
-- [ ] 3.1. Move project-manager source code
-  - [ ] 3.1.1. Move `/project-manager/src` to `/project-manager/src`
-  - [ ] 3.1.2. Move `/project-manager/bin` to `/project-manager/bin`
-  - [ ] 3.1.3. Move `/project-manager/data` to `/project-manager/data`
-  - [ ] 3.1.4. Move `/project-manager/templates` to `/project-manager/templates`
-  - [ ] 3.1.5. Move `/project-manager/tests` to `/project-manager/tests`
+- [x] 3.1. Move project-manager source code
+  - [x] 3.1.1. Move `/project-manager/src` to `/project-manager/src`
+  - [x] 3.1.2. Move `/project-manager/bin` to `/project-manager/bin`
+  - [x] 3.1.3. Move `/project-manager/data` to `/project-manager/data`
+  - [x] 3.1.4. Move `/project-manager/templates` to `/project-manager/templates`
+  - [x] 3.1.5. Move `/project-manager/tests` to `/project-manager/tests`
 
 ## Phase 4: Consolidate Documentation
 
