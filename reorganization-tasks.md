@@ -88,11 +88,11 @@ This document tracks the progress of the file structure reorganization for the P
 
 ## Phase 7: Move Configuration Files
 
-- [ ] 7.1. Move and update configuration files
-  - [ ] 7.1.1. Move `/project-manager/.env` to `/.env`
-  - [ ] 7.1.2. Move `/project-manager/package.json` to `/package.json` (merge if needed)
-  - [ ] 7.1.3. Move `/project-manager/.cursor` to `/.cursor`
-  - [ ] 7.1.4. Update paths in configuration files
+- [x] 7.1. Move and update configuration files
+  - [x] 7.1.1. Move `/project-manager/.env` to `/.env`
+  - [x] 7.1.2. Move `/project-manager/package.json` to `/package.json` (merge if needed)
+  - [x] 7.1.3. Move `/project-manager/.cursor` to `/.cursor`
+  - [x] 7.1.4. Update paths in configuration files
 
 ## Phase 8: Move Generated Files
 
