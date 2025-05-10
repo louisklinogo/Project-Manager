@@ -1,0 +1,223 @@
+# Project-Manager Architecture Guidelines
+
+## Overview
+
+This document outlines the architectural guidelines and file structure standards for the Project-Manager application. These guidelines aim to establish a consistent, maintainable, and scalable codebase structure.
+
+> **Important Note**: This repository is being renamed from "TaskMaster" to "Project-Manager" to align with the actual project name. All paths in this document refer to the structure after the rename is complete.
+
+## Directory Structure
+
+The Project-Manager follows a modular architecture with clear separation of concerns. The top-level directory structure should be organized as follows:
+
+```text
+/
+├── project-manager/        # Main project implementation
+│   ├── bin/                # CLI executables
+│   ├── src/                # Source code
+│   │   ├── ai/             # AI model integrations
+│   │   ├── blueprint/      # Blueprint generation and management
+│   │   ├── cli/            # Command-line interface
+│   │   ├── core/           # Core functionality
+│   │   ├── mcp-server/     # MCP server implementation
+│   │   ├── models/         # Data models and schemas
+│   │   ├── providers/      # Provider implementations
+│   │   ├── research/       # Research functionality
+│   │   └── utils/          # Utility functions
+│   ├── tests/              # Test files
+│   │   ├── unit/           # Unit tests
+│   │   ├── integration/    # Integration tests
+│   │   └── e2e/            # End-to-end tests
+│   └── templates/          # Template files
+├── reference/              # Reference code (renamed from claude-task-master)
+├── docs/                   # Consolidated documentation
+├── demos/                  # Demo scripts organized by feature
+├── scripts/                # Utility scripts
+├── reports/                # Test and coverage reports
+├── .env                    # Environment variables
+├── package.json            # Main package.json
+└── README.md               # Main README
+```
+
+## Naming Conventions
+
+### Files and Directories
+
+1. **Kebab Case**: All file and directory names should use kebab-case (lowercase with hyphens).
+   - Example: `research-provider.js`, `blueprint-generator.js`
+
+2. **Index Files**: Each directory should have an `index.js` file that exports the public API of that module.
+   - Example: `src/providers/index.js` exports all provider-related functionality
+
+3. **File Naming Patterns**:
+   - Implementation files: `feature-name.js`
+   - Interface files: `feature-name-interface.js`
+   - Test files: `feature-name.test.js`
+   - Mock files: `feature-name.mock.js`
+
+### Code Conventions
+
+1. **Classes**: Use PascalCase for class names.
+   - Example: `class BlueprintGenerator {}`
+
+2. **Functions and Variables**: Use camelCase for functions and variables.
+   - Example: `function generateBlueprint() {}`
+
+3. **Constants**: Use UPPER_SNAKE_CASE for constants.
+   - Example: `const MAX_RETRY_COUNT = 3;`
+
+## Module Organization
+
+### Core Modules
+
+1. **AI Module** (`src/ai/`):
+   - AI model integrations (OpenAI, Claude, Gemini)
+   - Prompt templates and management
+   - Response handling
+
+2. **Blueprint Module** (`src/blueprint/`):
+   - Blueprint generation
+   - Blueprint storage and retrieval
+   - Blueprint validation
+
+3. **Research Module** (`src/research/`):
+   - Research providers (Tavily, Firecrawl, etc.)
+   - Research orchestration
+   - Data extraction and synthesis
+
+4. **Providers Module** (`src/providers/`):
+   - Provider interfaces
+   - Provider implementations
+   - Mock providers for testing
+
+### Supporting Modules
+
+1. **Models Module** (`src/models/`):
+   - Data models
+   - Schema definitions
+   - Validation logic
+
+2. **Utils Module** (`src/utils/`):
+   - Shared utility functions
+   - Logging
+   - Error handling
+
+## Import Guidelines
+
+1. **Relative Imports**: Use relative imports for files within the same module.
+   - Example: `import { validateBlueprint } from './blueprint-validator.js';`
+
+2. **Absolute Imports**: Use absolute imports for files from different modules.
+   - Example: `import { ResearchProvider } from '../../providers/research-provider.js';`
+
+3. **Index Imports**: Import from index files when accessing multiple exports from a module.
+   - Example: `import { BlueprintGenerator, BlueprintStorage } from '../blueprint/index.js';`
+
+## Testing Guidelines
+
+1. **Test Organization**: Tests should mirror the source code structure.
+   - Example: `src/blueprint/blueprint-generator.js` → `tests/unit/blueprint/blueprint-generator.test.js`
+
+2. **Mock Dependencies**: Use mock implementations for external dependencies.
+   - Example: Create mock AI providers for testing blueprint generation
+
+3. **Test Coverage**: Aim for high test coverage, especially for core functionality.
+
+## Documentation Guidelines
+
+1. **JSDoc Comments**: Use JSDoc comments for all public APIs.
+   ```javascript
+   /**
+    * Generates a blueprint based on the provided requirements
+    * @param {string} name - The name of the blueprint
+    * @param {string} description - The description of the blueprint
+    * @param {string} requirements - The requirements for the blueprint
+    * @returns {Promise<Blueprint>} The generated blueprint
+    */
+   ```
+
+2. **README Files**: Each major module should have its own README.md file.
+
+3. **API Documentation**: Generate API documentation using JSDoc.
+
+4. **Ascension Documentation Pattern**: Follow the Ascension documentation pattern for all features:
+   - Research documentation: `project-manager/docs/research/<feature>/<feature>-research.md`
+   - Architecture documentation: `project-manager/docs/research/<feature>/<feature>-architecture.md`
+   - Implementation decisions: `project-manager/docs/research/<feature>/<feature>-decisions.md`
+   - Implementation plan: `project-manager/docs/research/<feature>/<feature>-implementation-plan.md`
+   - Implementation checklist: `project-manager/docs/implementation-checklists/<feature>-checklist.md`
+   - Test findings: `project-manager/docs/test-findings/<feature>-findings.md`
+   - Reconciliation: `project-manager/docs/reconciliation/<date>-<feature>-reconciliation.md`
+
+5. **Documentation Structure**: Use the documentation structure generator to create new documentation:
+   ```bash
+   npm run docs:init                      # Initialize documentation structure
+   npm run docs:feature <feature-name>    # Create documentation for a feature
+   npm run docs:reorganize                # Reorganize documentation directory
+   ```
+
+6. **Documentation Directory Structure**: All documentation must follow this structure:
+
+   ```text
+   project-manager/docs/
+   ├── api-reference/          # API documentation
+   ├── architecture/           # Architecture documentation
+   │   ├── component-diagrams/ # Component diagrams
+   │   ├── data-flow/          # Data flow diagrams
+   │   ├── file-structure/     # File structure documentation
+   │   ├── providers/          # Provider architecture
+   │   └── system-design/      # System design documents
+   ├── guides/                 # User and developer guides
+   ├── implementation-checklists/ # Implementation checklists
+   ├── process/                # Development process documentation
+   ├── reference/              # Reference documentation
+   ├── research/               # Research documentation
+   ├── reconciliation/         # Reconciliation documents
+   ├── test-findings/          # Test findings
+   ├── testing/                # Testing documentation
+   │   ├── guides/             # Testing guides
+   │   ├── logs/               # Testing logs
+   │   ├── strategies/         # Testing strategies
+   │   └── templates/          # Testing templates
+   └── ui/                     # UI/UX documentation
+       ├── components/         # UI component documentation
+       ├── design-system/      # Design system documentation
+       └── wireframes/         # UI wireframes
+   ```
+
+7. **Documentation Standards**: All documentation should be:
+   - Complete: Cover all aspects of the feature
+   - Clear: Easy to understand
+   - Consistent: Follow the same style and format
+   - Traceable: Show how research informs implementation
+   - Maintainable: Easy to update
+
+## Best Practices
+
+1. **Dependency Injection**: Use dependency injection for better testability.
+
+2. **Error Handling**: Implement consistent error handling throughout the codebase.
+
+3. **Logging**: Use the logger utility for all logging needs.
+
+4. **Configuration**: Use environment variables for configuration.
+
+5. **Async/Await**: Prefer async/await over callbacks and promise chains.
+
+## Implementation Guidelines
+
+1. **Feature Development Workflow**:
+   - Create a feature branch: `feature/feature-name`
+   - Implement the feature
+   - Write tests
+   - Create a pull request
+   - Merge after review
+
+2. **Code Quality Checks**:
+   - Run linting: `npm run lint`
+   - Run tests: `npm test`
+   - Check formatting: `npm run format:check`
+
+## Conclusion
+
+Following these guidelines will ensure a consistent, maintainable, and scalable codebase for the Project-Manager application. All team members should adhere to these guidelines when contributing to the project.

@@ -1,0 +1,39 @@
+{
+  "source": {
+    "include": ["project-manager/src"],
+    "includePattern": ".+\\.js$",
+    "excludePattern": "(node_modules/|docs/|tests/)"
+  },
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "destination": "./docs/api",
+    "recurse": true,
+    "template": "node_modules/clean-jsdoc-theme",
+    "theme_opts": {
+      "default_theme": "dark",
+      "homepageTitle": "Project-Manager API Documentation",
+      "menu": [
+        {
+          "title": "GitHub",
+          "link": "https://github.com/yourusername/project-manager",
+          "target": "_blank"
+        }
+      ]
+    }
+  },
+  "markdown": {
+    "hardwrap": false,
+    "idInHeadings": true
+  },
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": false
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "typescript": {
+    "moduleRoot": "project-manager/src"
+  }
+}

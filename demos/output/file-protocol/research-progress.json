@@ -1,0 +1,155 @@
+{
+  "operation": "demo-research-operation",
+  "progress": {
+    "value": 100,
+    "formatted": "100.0%"
+  },
+  "status": {
+    "message": "Research operation completed successfully",
+    "timestamp": "2025-04-28T19:55:04.731Z"
+  },
+  "estimatedTimeRemaining": {
+    "value": 0,
+    "formatted": "Complete"
+  },
+  "context": {
+    "recentStatus": [
+      {
+        "type": "info",
+        "message": "Initializing research operation",
+        "timestamp": "2025-04-28T19:54:44.244Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Planning phase",
+        "timestamp": "2025-04-28T19:54:44.291Z"
+      },
+      {
+        "type": "info",
+        "message": "Planning: Step 1/5",
+        "timestamp": "2025-04-28T19:54:44.293Z"
+      },
+      {
+        "type": "info",
+        "message": "Planning: Processing step 2/5",
+        "timestamp": "2025-04-28T19:54:45.331Z"
+      },
+      {
+        "type": "warning",
+        "message": "Planning: Minor issue detected in step 3/5",
+        "timestamp": "2025-04-28T19:54:46.340Z"
+      },
+      {
+        "type": "info",
+        "message": "Planning: Processing step 4/5",
+        "timestamp": "2025-04-28T19:54:47.356Z"
+      },
+      {
+        "type": "success",
+        "message": "Planning phase completed",
+        "timestamp": "2025-04-28T19:54:48.383Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Data Collection phase",
+        "timestamp": "2025-04-28T19:54:49.399Z"
+      },
+      {
+        "type": "info",
+        "message": "Data Collection: Step 1/5",
+        "timestamp": "2025-04-28T19:54:49.399Z"
+      },
+      {
+        "type": "info",
+        "message": "Data Collection: Processing step 2/5",
+        "timestamp": "2025-04-28T19:54:50.412Z"
+      },
+      {
+        "type": "warning",
+        "message": "Data Collection: Minor issue detected in step 3/5",
+        "timestamp": "2025-04-28T19:54:51.422Z"
+      },
+      {
+        "type": "info",
+        "message": "Data Collection: Processing step 4/5",
+        "timestamp": "2025-04-28T19:54:52.439Z"
+      },
+      {
+        "type": "success",
+        "message": "Data Collection phase completed",
+        "timestamp": "2025-04-28T19:54:53.453Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Analysis phase",
+        "timestamp": "2025-04-28T19:54:54.470Z"
+      },
+      {
+        "type": "info",
+        "message": "Analysis: Step 1/5",
+        "timestamp": "2025-04-28T19:54:54.470Z"
+      },
+      {
+        "type": "info",
+        "message": "Analysis: Processing step 2/5",
+        "timestamp": "2025-04-28T19:54:55.483Z"
+      },
+      {
+        "type": "warning",
+        "message": "Analysis: Minor issue detected in step 3/5",
+        "timestamp": "2025-04-28T19:54:56.504Z"
+      },
+      {
+        "type": "info",
+        "message": "Analysis: Processing step 4/5",
+        "timestamp": "2025-04-28T19:54:57.513Z"
+      },
+      {
+        "type": "success",
+        "message": "Analysis phase completed",
+        "timestamp": "2025-04-28T19:54:58.619Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Synthesis phase",
+        "timestamp": "2025-04-28T19:54:59.638Z"
+      },
+      {
+        "type": "info",
+        "message": "Synthesis: Step 1/5",
+        "timestamp": "2025-04-28T19:54:59.638Z"
+      },
+      {
+        "type": "info",
+        "message": "Synthesis: Processing step 2/5",
+        "timestamp": "2025-04-28T19:55:00.655Z"
+      },
+      {
+        "type": "warning",
+        "message": "Synthesis: Minor issue detected in step 3/5",
+        "timestamp": "2025-04-28T19:55:01.667Z"
+      },
+      {
+        "type": "info",
+        "message": "Synthesis: Processing step 4/5",
+        "timestamp": "2025-04-28T19:55:02.686Z"
+      },
+      {
+        "type": "success",
+        "message": "Synthesis phase completed",
+        "timestamp": "2025-04-28T19:55:03.699Z"
+      },
+      {
+        "type": "success",
+        "message": "Research operation completed successfully",
+        "timestamp": "2025-04-28T19:55:04.730Z"
+      }
+    ],
+    "recentOperations": ["demo-research-operation"]
+  },
+  "metadata": {
+    "format": "json",
+    "version": "1.0",
+    "generated": "2025-04-28T19:55:04.731Z"
+  }
+}

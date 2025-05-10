@@ -1,0 +1,85 @@
+{
+  "operation": "demo-research-operation",
+  "progress": {
+    "value": 70,
+    "formatted": "70.0%"
+  },
+  "status": {
+    "message": "Research completed successfully for task: Research JavaScript Frameworks",
+    "timestamp": "2025-04-28T21:01:43.645Z"
+  },
+  "estimatedTimeRemaining": {
+    "value": null,
+    "formatted": "Unknown"
+  },
+  "context": {
+    "recentStatus": [
+      {
+        "type": "info",
+        "message": "Initializing research for task: Research JavaScript Frameworks",
+        "timestamp": "2025-04-28T21:00:55.695Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting research execution for task: Research JavaScript Frameworks",
+        "timestamp": "2025-04-28T21:00:55.703Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Plan Preparation phase",
+        "timestamp": "2025-04-28T21:00:55.710Z"
+      },
+      {
+        "type": "info",
+        "message": "Plan Preparation phase 50% complete",
+        "timestamp": "2025-04-28T21:00:56.257Z"
+      },
+      {
+        "type": "info",
+        "message": "Completed Plan Preparation phase",
+        "timestamp": "2025-04-28T21:00:56.427Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Topic Research phase",
+        "timestamp": "2025-04-28T21:00:56.474Z"
+      },
+      {
+        "type": "info",
+        "message": "Topic Research phase 50% complete",
+        "timestamp": "2025-04-28T21:01:20.782Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Result Synthesis phase",
+        "timestamp": "2025-04-28T21:01:26.516Z"
+      },
+      {
+        "type": "info",
+        "message": "Result Synthesis phase 50% complete",
+        "timestamp": "2025-04-28T21:01:26.555Z"
+      },
+      {
+        "type": "info",
+        "message": "Completed Result Synthesis phase",
+        "timestamp": "2025-04-28T21:01:26.742Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Result Formatting phase",
+        "timestamp": "2025-04-28T21:01:26.766Z"
+      },
+      {
+        "type": "success",
+        "message": "Research completed successfully for task: Research JavaScript Frameworks",
+        "timestamp": "2025-04-28T21:01:26.876Z"
+      }
+    ],
+    "recentOperations": ["demo-research-operation"]
+  },
+  "metadata": {
+    "format": "json",
+    "version": "1.0",
+    "generated": "2025-04-28T21:01:43.645Z"
+  }
+}

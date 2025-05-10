@@ -1,0 +1,371 @@
+{
+  "plan": {
+    "id": "plan-123",
+    "taskName": "Research JavaScript Frameworks",
+    "taskDescription": "Research popular JavaScript frameworks for web development",
+    "topics": [
+      {
+        "id": "topic-1",
+        "name": "React",
+        "importance": "high",
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What are the key features of React?"
+          },
+          {
+            "id": "q2",
+            "text": "How does React compare to other frameworks?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-1",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "React key features"
+          },
+          {
+            "id": "source-2",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes React popular?"
+          }
+        ]
+      },
+      {
+        "id": "topic-2",
+        "name": "Vue.js",
+        "importance": "medium",
+        "questions": [
+          {
+            "id": "q3",
+            "text": "What are the key features of Vue.js?"
+          },
+          {
+            "id": "q4",
+            "text": "How does Vue.js compare to React?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-3",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "Vue.js key features"
+          },
+          {
+            "id": "source-4",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes Vue.js unique?"
+          }
+        ]
+      },
+      {
+        "id": "topic-3",
+        "name": "Angular",
+        "importance": "medium",
+        "questions": [
+          {
+            "id": "q5",
+            "text": "What are the key features of Angular?"
+          },
+          {
+            "id": "q6",
+            "text": "How does Angular compare to React and Vue.js?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-5",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "Angular key features"
+          },
+          {
+            "id": "source-6",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes Angular different?"
+          }
+        ]
+      }
+    ]
+  },
+  "providers": {
+    "tavily": {
+      "apiKey": "demo-key"
+    },
+    "openai": {
+      "apiKey": "demo-key"
+    }
+  },
+  "operationId": "demo-research-operation",
+  "prioritizedTopics": {
+    "highPriority": [
+      {
+        "id": "topic-1",
+        "name": "React",
+        "importance": "high",
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What are the key features of React?"
+          },
+          {
+            "id": "q2",
+            "text": "How does React compare to other frameworks?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-1",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "React key features"
+          },
+          {
+            "id": "source-2",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes React popular?"
+          }
+        ]
+      }
+    ],
+    "mediumPriority": [
+      {
+        "id": "topic-2",
+        "name": "Vue.js",
+        "importance": "medium",
+        "questions": [
+          {
+            "id": "q3",
+            "text": "What are the key features of Vue.js?"
+          },
+          {
+            "id": "q4",
+            "text": "How does Vue.js compare to React?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-3",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "Vue.js key features"
+          },
+          {
+            "id": "source-4",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes Vue.js unique?"
+          }
+        ]
+      },
+      {
+        "id": "topic-3",
+        "name": "Angular",
+        "importance": "medium",
+        "questions": [
+          {
+            "id": "q5",
+            "text": "What are the key features of Angular?"
+          },
+          {
+            "id": "q6",
+            "text": "How does Angular compare to React and Vue.js?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-5",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "Angular key features"
+          },
+          {
+            "id": "source-6",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes Angular different?"
+          }
+        ]
+      }
+    ],
+    "lowPriority": [],
+    "all": [
+      {
+        "id": "topic-1",
+        "name": "React",
+        "importance": "high",
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What are the key features of React?"
+          },
+          {
+            "id": "q2",
+            "text": "How does React compare to other frameworks?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-1",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "React key features"
+          },
+          {
+            "id": "source-2",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes React popular?"
+          }
+        ]
+      },
+      {
+        "id": "topic-2",
+        "name": "Vue.js",
+        "importance": "medium",
+        "questions": [
+          {
+            "id": "q3",
+            "text": "What are the key features of Vue.js?"
+          },
+          {
+            "id": "q4",
+            "text": "How does Vue.js compare to React?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-3",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "Vue.js key features"
+          },
+          {
+            "id": "source-4",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes Vue.js unique?"
+          }
+        ]
+      },
+      {
+        "id": "topic-3",
+        "name": "Angular",
+        "importance": "medium",
+        "questions": [
+          {
+            "id": "q5",
+            "text": "What are the key features of Angular?"
+          },
+          {
+            "id": "q6",
+            "text": "How does Angular compare to React and Vue.js?"
+          }
+        ],
+        "sources": [
+          {
+            "id": "source-5",
+            "type": "web-search",
+            "provider": "tavily",
+            "query": "Angular key features"
+          },
+          {
+            "id": "source-6",
+            "type": "question-answering",
+            "provider": "openai",
+            "query": "What makes Angular different?"
+          }
+        ]
+      }
+    ]
+  },
+  "researchTasks": [
+    {
+      "id": "task-e4230482-d29f-48f2-929d-b6c931705987",
+      "topicId": "topic-1",
+      "topicName": "React",
+      "sourceId": "source-1",
+      "sourceType": "web-search",
+      "provider": "tavily",
+      "query": "React key features",
+      "importance": "high",
+      "status": "pending"
+    },
+    {
+      "id": "task-debb4904-7ac2-472c-8bc0-224db5f0ab7e",
+      "topicId": "topic-1",
+      "topicName": "React",
+      "sourceId": "source-2",
+      "sourceType": "question-answering",
+      "provider": "openai",
+      "query": "What makes React popular?",
+      "importance": "high",
+      "status": "pending"
+    },
+    {
+      "id": "task-aac74490-be92-4741-91f7-12906459fa8b",
+      "topicId": "topic-2",
+      "topicName": "Vue.js",
+      "sourceId": "source-3",
+      "sourceType": "web-search",
+      "provider": "tavily",
+      "query": "Vue.js key features",
+      "importance": "medium",
+      "status": "pending"
+    },
+    {
+      "id": "task-ef04608b-7cab-4013-b2ce-75ccd1fc07bb",
+      "topicId": "topic-2",
+      "topicName": "Vue.js",
+      "sourceId": "source-4",
+      "sourceType": "question-answering",
+      "provider": "openai",
+      "query": "What makes Vue.js unique?",
+      "importance": "medium",
+      "status": "pending"
+    },
+    {
+      "id": "task-16aee7bf-a139-46d7-9a6d-a9e849f3bdbc",
+      "topicId": "topic-3",
+      "topicName": "Angular",
+      "sourceId": "source-5",
+      "sourceType": "web-search",
+      "provider": "tavily",
+      "query": "Angular key features",
+      "importance": "medium",
+      "status": "pending"
+    },
+    {
+      "id": "task-2e689c69-1068-4e30-b6da-e151c74cfede",
+      "topicId": "topic-3",
+      "topicName": "Angular",
+      "sourceId": "source-6",
+      "sourceType": "question-answering",
+      "provider": "openai",
+      "query": "What makes Angular different?",
+      "importance": "medium",
+      "status": "pending"
+    }
+  ],
+  "topicSynthesis": {},
+  "crossTopicInsights": {
+    "summary": "Overall findings for Research JavaScript Frameworks",
+    "keyInsights": [
+      "Cross-topic insight 1 for Research JavaScript Frameworks",
+      "Cross-topic insight 2 for Research JavaScript Frameworks",
+      "Cross-topic insight 3 for Research JavaScript Frameworks"
+    ],
+    "recommendations": [
+      "Recommendation 1 for Research JavaScript Frameworks",
+      "Recommendation 2 for Research JavaScript Frameworks",
+      "Recommendation 3 for Research JavaScript Frameworks"
+    ],
+    "confidence": 0.9
+  }
+}

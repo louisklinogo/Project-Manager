@@ -1,0 +1,85 @@
+{
+  "operation": "demo-research-operation",
+  "progress": {
+    "value": 70,
+    "formatted": "70.0%"
+  },
+  "status": {
+    "message": "Topic Research phase 50% complete",
+    "timestamp": "2025-04-28T20:21:07.167Z"
+  },
+  "estimatedTimeRemaining": {
+    "value": 16214,
+    "formatted": "16s"
+  },
+  "context": {
+    "recentStatus": [
+      {
+        "type": "info",
+        "message": "Initializing research for task: Research JavaScript Frameworks",
+        "timestamp": "2025-04-28T20:20:12.638Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting research execution for task: Research JavaScript Frameworks",
+        "timestamp": "2025-04-28T20:20:12.644Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Plan Preparation phase",
+        "timestamp": "2025-04-28T20:20:12.646Z"
+      },
+      {
+        "type": "info",
+        "message": "Plan Preparation phase 50% complete",
+        "timestamp": "2025-04-28T20:20:12.790Z"
+      },
+      {
+        "type": "info",
+        "message": "Completed Plan Preparation phase",
+        "timestamp": "2025-04-28T20:20:12.853Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Topic Research phase",
+        "timestamp": "2025-04-28T20:20:12.873Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Result Synthesis phase",
+        "timestamp": "2025-04-28T20:20:42.927Z"
+      },
+      {
+        "type": "info",
+        "message": "Result Synthesis phase 50% complete",
+        "timestamp": "2025-04-28T20:20:43.011Z"
+      },
+      {
+        "type": "info",
+        "message": "Completed Result Synthesis phase",
+        "timestamp": "2025-04-28T20:20:43.066Z"
+      },
+      {
+        "type": "info",
+        "message": "Starting Result Formatting phase",
+        "timestamp": "2025-04-28T20:20:43.069Z"
+      },
+      {
+        "type": "success",
+        "message": "Research completed successfully for task: Research JavaScript Frameworks",
+        "timestamp": "2025-04-28T20:20:43.306Z"
+      },
+      {
+        "type": "info",
+        "message": "Topic Research phase 50% complete",
+        "timestamp": "2025-04-28T20:20:45.591Z"
+      }
+    ],
+    "recentOperations": ["demo-research-operation"]
+  },
+  "metadata": {
+    "format": "json",
+    "version": "1.0",
+    "generated": "2025-04-28T20:21:07.167Z"
+  }
+}

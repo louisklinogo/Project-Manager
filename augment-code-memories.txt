@@ -1,0 +1,57 @@
+
+# Project Vision and Goals
+- User wants to create a 'Project-Manager' project inspired by the TaskMaster codebase, with compatibility across multiple IDEs (Cursor, VS Code, etc.) and functionality to instruct LLMs/agents on tasks.
+- User wants Project-Manager to focus on creating designs/blueprints for IDE coding LLMs to follow, not code itself, and should use models good at multi-modal reasoning, planning, and coding to generate optimal workflows.
+- User wants Project-Manager to research existing projects using tools like Firecrawl, Tavily or Exa before starting new projects, with the goal of making development easier and more structured for LLMs/agents.
+- User wants Project-Manager to focus on thorough online research before creating plans, avoid unnecessary complexity, and achieve a 99%+ success rate for project planning.
+- User wants to have an initial working MVP (Minimum Viable Product) of project-manager that can be used while continuing development, prioritizing early usability over complete implementation.
+
+# User Preferences and Needs
+- User prefers thorough implementation with focus on efficiency rather than just checking off tasks, and is open to updating tasks.md as the project evolves.
+- User prefers visual interfaces due to executive function and memory issues, and wants Project-Manager to be accessible to non-programmers.
+- User prefers implementing the interface that would best serve their needs (as someone with executive dysfunction and memory issues) first to enable faster experimentation.
+- User prefers handling GitHub operations (pull requests, etc.) directly through assistant tools rather than using the browser since they are not a programmer.
+- User prefers cautious implementation of enhancements to avoid breaking the existing system.
+- User is questioning whether JavaScript is still the right choice for the project and suggesting a move away from CLI-based interfaces.
+- User wants Project-Manager to integrate seamlessly with AI IDEs like Cursor and WindSurf, and AI coding assistants like RooCode and Cline in VS Code.
+- User wants documentation to reference the current year (2025) but doesn't want model names artificially changed from their official versions.
+- User wants to know whether the research phase is designed for user interaction or for internal system use only.
+- User prefers having both user-initiated and system-integrated modes for the Research Phase.
+- User prefers thorough system checks and efficiency analysis of logic and processes before proceeding with implementation.
+- User wants redundant, monotonous or duplicated tasks in the system to be handled with professional judgment, taking the best approach as a seasoned software developer who understands the system.
+- User prefers having API key entries pre-added to .env files so they can simply update values rather than creating new entries.
+- User wants the system to always use synthesized knowledge from research phases in tasks.md as a guide for implementing subsequent tasks.
+- User wants implementation decisions to be explicitly tied to research findings, following the workflow: research, analyze codebase, evaluate options based on research, plan, and implement guided by research.
+- User wants a structured research-driven implementation approach with thorough documentation for each phase: research summaries, architecture diagrams, decision documents with rationales, and detailed implementation plans.
+- User prefers a clear, structured process in tasks.md that can be followed without additional prompting.
+- User wants to know if we have access to context7 mcp tool for research.
+- User prefers using Context7 MCP tool for researching API documentation like Firecrawl.
+- User wants to incorporate reading official documentation and using Context7 MCP into the workflow for all tasks before implementation.
+
+# Development Approach
+- User prefers completing tests (like provider-demo) before moving on to implement new tasks from tasks.md.
+- User prefers completing tests thoroughly before moving on to the next test, and wants tests to be run after they are created.
+- User wants to combine unit tests with real-world demonstration scripts to ensure functionality works in practical usage scenarios.
+- User prefers testing implementations with real API calls and actual API keys to validate functionality before proceeding.
+- User wants to adopt a feature branch workflow: create a new branch with pattern 'feature/task-name', implement the feature, create a PR, and merge back to the main branch after review.
+- User wants to reconcile completed tasks with tasks.md and push to GitHub before continuing with implementation of new tasks.
+- User wants tasks.md to include detailed references and breakdowns for each task with proper logical sequencing and clear prioritization.
+- User wants to perform proper research using Tavily or Firecrawl MCP tools, sequential thinking, and comprehensive contextual analysis of codebase before implementing each task or phase.
+- User wants to implement the research and analysis phase as actual logic in the project-manager codebase rather than just as documentation.
+- User wants to document test findings in the system as they provide insights into component strengths and system performance.
+- User wants test findings to be documented and synthesized to inform future implementation decisions.
+
+# Technical Requirements
+- User wants to integrate Project-Manager with OpenRouter, Google Gemini (2.5 Pro), OpenAI, and Claude, using their latest cost-effective models with thinking capabilities.
+- User wants Project-Manager to allow users to choose their own models for whichever AI provider they want to use.
+- User wants to implement a tiered confidence scoring system for research sources that considers factors like source reputation, recency, and relevance.
+- User wants to research and potentially integrate with existing research tools like Tavily, Exa, Perplexity, and Firecrawl instead of building all research functionality from scratch.
+- User wants to integrate Context7 into the project to save development time and prefers leveraging existing tools over building everything from scratch.
+- User has added OpenAI and Gemini API keys for testing but prefers using Gemini for future tests due to an empty OpenAI account.
+- User has Tavily and Firecrawl API keys available for real-time testing of research providers.
+
+# Reference Materials
+- User wants to adopt the Tutorial-Codebase-Knowledge process (https://github.com/louisklinogo/Tutorial-Codebase-Knowledge) and copy necessary components into the project.
+- User wants to evaluate PocketFlow (100-line LLM framework) for potential integration into the Project-Manager.
+- The main logic and prompts for TaskMaster are located in the @claude-task-master/ directory and should be implemented in Project-Manager.
+- User has a .env file in the root directory that should be copied to the project-manager directory for running tests.

@@ -1,0 +1,610 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Interactive Task Dependencies</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      header {
+        background-color: #f5f5f5;
+        padding: 10px 20px;
+        border-bottom: 1px solid #ddd;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.5em;
+      }
+      .container {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+      .graph-container {
+        flex: 1;
+        padding: 20px;
+        overflow: auto;
+      }
+      .sidebar {
+        width: 300px;
+        background-color: #f9f9f9;
+        border-left: 1px solid #ddd;
+        padding: 20px;
+        overflow: auto;
+      }
+      .task-detail {
+        margin-bottom: 20px;
+      }
+      .task-meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .status,
+      .priority,
+      .completion {
+        background-color: #eee;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+      .description {
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 3px;
+        border: 1px solid #eee;
+      }
+      .dependencies,
+      .dependents {
+        margin-top: 15px;
+      }
+      .dependencies h3,
+      .dependents h3 {
+        font-size: 1.1em;
+        margin-bottom: 5px;
+      }
+      .circular-dependency {
+        border-color: #f44336;
+        background-color: #ffebee;
+      }
+      .circular-dependency h2 {
+        color: #d32f2f;
+      }
+      .circular-dependency li.circular-dependency {
+        color: #d32f2f;
+      }
+      .legend {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+      }
+      .controls {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+      }
+      button {
+        padding: 5px 10px;
+        margin-right: 5px;
+        background-color: #e0e0e0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #d0d0d0;
+      }
+
+      .collapsible {
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        background-color: #f1f1f1;
+        margin-bottom: 5px;
+      }
+      .active,
+      .collapsible:hover {
+        background-color: #e0e0e0;
+      }
+      .content {
+        padding: 0 18px;
+        display: none;
+        overflow: hidden;
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Interactive Task Dependencies</h1>
+    </header>
+
+    <div class="container">
+      <div class="graph-container">
+        <div class="controls">
+          <button id="zoom-in">Zoom In</button>
+          <button id="zoom-out">Zoom Out</button>
+          <button id="reset">Reset</button>
+          <button id="toggle-all">Expand/Collapse All</button>
+        </div>
+        <div class="mermaid">
+          flowchart TD task-1["task-1: Design Database Schema"] style task-1
+          fill:#FFEBEE,stroke:#D32F2F task-2["task-2: Implement API Endpoints"]
+          style task-2 fill:#FFEBEE,stroke:#D32F2F task-3["task-3: Create User
+          Interface"] style task-3 fill:#F5F5F5,stroke:#9E9E9E task-4["task-4:
+          Develop Frontend Logic"] style task-4 fill:#E8F5E9,stroke:#388E3C
+          task-5["task-5: Integrate API with Frontend"] style task-5
+          fill:#F5F5F5,stroke:#9E9E9E task-6["task-6: Write Unit Tests"] style
+          task-6 fill:#E3F2FD,stroke:#1976D2 task-7["task-7: Write Integration
+          Tests"] style task-7 fill:#F5F5F5,stroke:#9E9E9E task-8["task-8:
+          Deploy to Staging"] style task-8 fill:#FFEBEE,stroke:#D32F2F
+          task-9["task-9: Perform User Acceptance Testing"] style task-9
+          fill:#FFEBEE,stroke:#D32F2F task-10["task-10: A self-dependent task"]
+          style task-10 fill:#FFEBEE,stroke:#D32F2F task-2 -->|depends on|
+          task-1 linkStyle 0 stroke:#D32F2F,stroke-width:2px task-1 -->|depends
+          on| task-2 linkStyle 1 stroke:#D32F2F,stroke-width:2px task-4
+          -->|depends on| task-3 task-5 -->|depends on| task-3 task-2
+          -->|depends on| task-5 task-2 -->|depends on| task-6 task-4
+          -->|depends on| task-6 task-7 -->|depends on| task-6 task-5
+          -->|depends on| task-7 task-6 -->|depends on| task-8 task-7
+          -->|depends on| task-8 task-9 -->|depends on| task-8 linkStyle 11
+          stroke:#D32F2F,stroke-width:2px task-8 -->|depends on| task-9
+          linkStyle 12 stroke:#D32F2F,stroke-width:2px task-10 -->|depends on|
+          task-10 linkStyle 13 stroke:#D32F2F,stroke-width:2px non-existent-task
+          -->|depends on| task-10
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <h2>Task Details</h2>
+        <p>Click on a task in the diagram to view its details.</p>
+
+        <div
+          id="task-task-1"
+          class="task-detail circular-dependency"
+          style="display: none"
+        >
+          <h2>task-1: Design Database Schema</h2>
+          <div class="task-meta">
+            <span class="status">Status: pending</span>
+            <span class="priority">Priority: high</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">
+            Design the database schema for the application.
+          </div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-2</strong>: Implement API Endpoints
+              </li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-2</strong>: Implement API Endpoints
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          id="task-task-2"
+          class="task-detail circular-dependency"
+          style="display: none"
+        >
+          <h2>task-2: Implement API Endpoints</h2>
+          <div class="task-meta">
+            <span class="status">Status: in-progress</span>
+            <span class="priority">Priority: high</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">
+            Implement the API endpoints for the application.
+          </div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-1</strong>: Design Database Schema
+              </li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-1</strong>: Design Database Schema
+              </li>
+              <li class="">
+                <strong>task-5</strong>: Integrate API with Frontend
+              </li>
+              <li class=""><strong>task-6</strong>: Write Unit Tests</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="task-task-3" class="task-detail" style="display: none">
+          <h2>task-3: Create User Interface</h2>
+          <div class="task-meta">
+            <span class="status">Status: pending</span>
+            <span class="priority">Priority: medium</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">
+            Create the user interface for the application.
+          </div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class=""><strong>task-4</strong>: Develop Frontend Logic</li>
+              <li class="">
+                <strong>task-5</strong>: Integrate API with Frontend
+              </li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li>Not required by any task</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="task-task-4" class="task-detail" style="display: none">
+          <h2>task-4: Develop Frontend Logic</h2>
+          <div class="task-meta">
+            <span class="status">Status: done</span>
+            <span class="priority">Priority: medium</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">
+            Develop the frontend logic for the application.
+          </div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li>No dependencies</li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class=""><strong>task-3</strong>: Create User Interface</li>
+              <li class=""><strong>task-6</strong>: Write Unit Tests</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="task-task-5" class="task-detail" style="display: none">
+          <h2>task-5: Integrate API with Frontend</h2>
+          <div class="task-meta">
+            <span class="status">Status: pending</span>
+            <span class="priority">Priority: high</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">Integrate the API with the frontend.</div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class=""><strong>task-2</strong>: Implement API Endpoints</li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class=""><strong>task-3</strong>: Create User Interface</li>
+              <li class=""><strong>task-7</strong>: Write Integration Tests</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="task-task-6" class="task-detail" style="display: none">
+          <h2>task-6: Write Unit Tests</h2>
+          <div class="task-meta">
+            <span class="status">Status: in-progress</span>
+            <span class="priority">Priority: low</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">Write unit tests for the application.</div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class=""><strong>task-2</strong>: Implement API Endpoints</li>
+              <li class=""><strong>task-4</strong>: Develop Frontend Logic</li>
+              <li class=""><strong>task-7</strong>: Write Integration Tests</li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class=""><strong>task-8</strong>: Deploy to Staging</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="task-task-7" class="task-detail" style="display: none">
+          <h2>task-7: Write Integration Tests</h2>
+          <div class="task-meta">
+            <span class="status">Status: pending</span>
+            <span class="priority">Priority: low</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">
+            Write integration tests for the application.
+          </div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class="">
+                <strong>task-5</strong>: Integrate API with Frontend
+              </li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class=""><strong>task-6</strong>: Write Unit Tests</li>
+              <li class=""><strong>task-8</strong>: Deploy to Staging</li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          id="task-task-8"
+          class="task-detail circular-dependency"
+          style="display: none"
+        >
+          <h2>task-8: Deploy to Staging</h2>
+          <div class="task-meta">
+            <span class="status">Status: pending</span>
+            <span class="priority">Priority: high</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">
+            Deploy the application to the staging environment.
+          </div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class=""><strong>task-6</strong>: Write Unit Tests</li>
+              <li class=""><strong>task-7</strong>: Write Integration Tests</li>
+              <li class="circular-dependency">
+                <strong>task-9</strong>: Perform User Acceptance Testing
+              </li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-9</strong>: Perform User Acceptance Testing
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          id="task-task-9"
+          class="task-detail circular-dependency"
+          style="display: none"
+        >
+          <h2>task-9: Perform User Acceptance Testing</h2>
+          <div class="task-meta">
+            <span class="status">Status: pending</span>
+            <span class="priority">Priority: medium</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">Perform user acceptance testing.</div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-8</strong>: Deploy to Staging
+              </li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-8</strong>: Deploy to Staging
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          id="task-task-10"
+          class="task-detail circular-dependency"
+          style="display: none"
+        >
+          <h2>task-10: A self-dependent task</h2>
+          <div class="task-meta">
+            <span class="status">Status: pending</span>
+            <span class="priority">Priority: low</span>
+            <span class="completion">Completion: 0%</span>
+          </div>
+
+          <div class="description">This task depends on itself.</div>
+
+          <div class="dependencies">
+            <h3>Dependencies</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-10</strong>: A self-dependent task
+              </li>
+              <li class=""><strong>non-existent-task</strong>: Unknown Task</li>
+            </ul>
+          </div>
+
+          <div class="dependents">
+            <h3>Required By</h3>
+            <ul>
+              <li class="circular-dependency">
+                <strong>task-10</strong>: A self-dependent task
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="legend">
+          <h3>Legend</h3>
+          <ul>
+            <li>
+              <span style="color: #d32f2f">Red</span>: Circular dependencies
+            </li>
+            <li><span style="color: #388e3c">Green</span>: Completed tasks</li>
+            <li><span style="color: #1976d2">Blue</span>: In-progress tasks</li>
+            <li><span style="color: #9e9e9e">Gray</span>: Pending tasks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize Mermaid
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "default",
+        securityLevel: "loose",
+        flowchart: {
+          curve: "basis",
+        },
+      });
+
+      // Add click handlers after Mermaid renders
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get all the task nodes
+        const taskNodes = document.querySelectorAll(".mermaid g.node");
+
+        // Add click handlers to each node
+        taskNodes.forEach((node) => {
+          node.addEventListener("click", function () {
+            // Get the task ID from the node
+            const taskId = this.id.replace("flowchart-", "");
+
+            // Hide all task details
+            document.querySelectorAll(".task-detail").forEach((detail) => {
+              detail.style.display = "none";
+            });
+
+            // Show the selected task details
+            const taskDetail = document.getElementById("task-" + taskId);
+            if (taskDetail) {
+              taskDetail.style.display = "block";
+            }
+          });
+        });
+
+        // Zoom controls
+        let zoom = 1;
+        const zoomStep = 0.1;
+        const mermaidDiv = document.querySelector(".mermaid");
+
+        document
+          .getElementById("zoom-in")
+          .addEventListener("click", function () {
+            zoom += zoomStep;
+            mermaidDiv.style.transform = "scale(" + zoom + ")";
+          });
+
+        document
+          .getElementById("zoom-out")
+          .addEventListener("click", function () {
+            if (zoom > zoomStep) {
+              zoom -= zoomStep;
+              mermaidDiv.style.transform = "scale(" + zoom + ")";
+            }
+          });
+
+        document.getElementById("reset").addEventListener("click", function () {
+          zoom = 1;
+          mermaidDiv.style.transform = "scale(1)";
+        });
+
+        // Collapsible sections
+        const coll = document.getElementsByClassName("collapsible");
+        for (let i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            const content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+
+        // Toggle all button
+        document
+          .getElementById("toggle-all")
+          .addEventListener("click", function () {
+            const allCollapsible =
+              document.getElementsByClassName("collapsible");
+            const allExpanded = Array.from(allCollapsible).every((el) =>
+              el.classList.contains("active"),
+            );
+
+            for (let i = 0; i < allCollapsible.length; i++) {
+              const content = allCollapsible[i].nextElementSibling;
+              if (allExpanded) {
+                allCollapsible[i].classList.remove("active");
+                content.style.display = "none";
+              } else {
+                allCollapsible[i].classList.add("active");
+                content.style.display = "block";
+              }
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "operation": "demo-research-operation",
+  "progress": {
+    "value": 100,
+    "formatted": "100.0%"
+  },
+  "status": {
+    "message": "Research operation completed successfully",
+    "timestamp": "2025-04-28T19:55:04.745Z"
+  },
+  "metadata": {
+    "format": "json",
+    "version": "1.0",
+    "generated": "2025-04-28T19:55:04.745Z"
+  }
+}

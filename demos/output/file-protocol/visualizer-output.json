@@ -1,0 +1,49 @@
+{
+  "operation": "demo-research-operation",
+  "progress": {
+    "value": 100,
+    "formatted": "100.0%"
+  },
+  "status": {
+    "message": "Research operation completed successfully",
+    "timestamp": "2025-04-28T19:55:04.737Z"
+  },
+  "estimatedTimeRemaining": {
+    "value": 0,
+    "formatted": "Complete"
+  },
+  "context": {
+    "lastOperation": "demo-research-operation",
+    "recentOperations": [
+      "demo-research-operation",
+      "demo-research-operation",
+      "demo-research-operation"
+    ],
+    "recentStatus": [
+      {
+        "timestamp": "2025-04-28T19:55:04.737Z"
+      },
+      {
+        "timestamp": "2025-04-28T19:55:03.729Z"
+      },
+      {
+        "timestamp": "2025-04-28T19:55:03.728Z"
+      },
+      {
+        "timestamp": "2025-04-28T19:55:02.695Z"
+      },
+      {
+        "timestamp": "2025-04-28T19:55:02.694Z"
+      }
+    ]
+  },
+  "progressTrend": {
+    "direction": "stable",
+    "change": 0
+  },
+  "metadata": {
+    "format": "json",
+    "version": "1.0",
+    "generated": "2025-04-28T19:55:04.737Z"
+  }
+}
